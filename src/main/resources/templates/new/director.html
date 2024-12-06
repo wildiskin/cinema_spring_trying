@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>new director</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/new/director}" th:object="${director}">
+    <label for="name">Enter a name</label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <div style="color:darkred" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
+    <br>
+    <input type="submit" value="create">
+</form>
+</body>
+</html>

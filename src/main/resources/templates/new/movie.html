@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Movie</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/new/movie}" th:object="${movie}">
+    <label for="name">Enter a name</label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <div style="color:darkred" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
+    <br>
+    <label for="director">Enter a director</label>
+    <input type="text" th:field="*{director}" id="director"/>
+    <div style="color:darkred" th:if="${#fields.errors('director')}" th:errors="*{director}"></div>
+    <br>
+    <label for="year">Enter a year of movie</label>
+    <input type="text" th:field="*{year}" id="year"/>
+    <div style="color:darkred" th:if="${#fields.errors('year')}" th:errors="*{year}"></div>
+    <br>
+    <label for="description">Enter a movie description</label>
+    <input type="text" th:field="*{description}" id="description"/>
+    <div style="color:darkred" th:if="${#fields.errors('description')}" th:errors="*{description}"></div>
+    <br>
+    <label for="sourceBook">Enter a name</label>
+    <input type="text" th:field="*{sourceBook}" id="sourceBook"/>
+    <div style="color:darkred" th:if="${#fields.errors('sourceBook')}" th:errors="*{sourceBook}"></div>
+    <br>
+    <input type="submit" value="create">
+</form>
+
+</body>
+</html>
