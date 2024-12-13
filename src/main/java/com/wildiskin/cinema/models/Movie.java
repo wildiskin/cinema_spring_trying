@@ -30,6 +30,12 @@ public class Movie {
 
     public Movie() {}
 
+    public Movie(String name, int year, String description) {
+        this.name = name;
+        this.year = year;
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +

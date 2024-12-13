@@ -1,15 +1,18 @@
 package com.wildiskin.cinema.controllers;
 
+import com.wildiskin.cinema.DTO.BookDTO;
+import com.wildiskin.cinema.DTO.DirectorDTO;
+import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
-import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.services.BookService;
-import com.wildiskin.cinema.services.DirectorService;
-import com.wildiskin.cinema.services.MovieService;
+import com.wildiskin.cinema.services.MainService;
+import com.wildiskin.cinema.util.BookValidator;
+import com.wildiskin.cinema.util.DirectorValidator;
+import com.wildiskin.cinema.util.MovieValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,19 +22,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/new")
 public class NewController {
 
-    private final MovieService movieService;
-    private final DirectorService directorService;
-    private final BookService bookService;
+    private final MainService mainService;
+    private final MovieValidator movieValidator;
+    private final BookValidator bookValidator;
+    private final DirectorValidator directorValidator;
 
     @Autowired
-    public NewController(MovieService movieService, DirectorService directorService, BookService bookService) {
-        this.movieService = movieService;
-        this.directorService = directorService;
-        this.bookService = bookService;
+    public NewController(MainService mainService, MovieValidator movieValidator, BookValidator bookValidator, DirectorValidator directorValidator) {
+        this.mainService = mainService;
+        this.movieValidator = movieValidator;
+        this.bookValidator = bookValidator;
+        this.directorValidator = directorValidator;
     }
 
     @GetMapping("/movie")
-    public String Movie(@ModelAttribute("movie") Movie movie) {
+    public String Movie(@ModelAttribute("movieDTO") MovieDTO movieDTO) {
         return "new/movie";
     }
 
@@ -46,29 +51,38 @@ public class NewController {
     }
 
     @PostMapping("/movie")
-    public String createMovie(@ModelAttribute("movie") Movie movie, BindingResult bindingResult) {
+    public String createMovie(@ModelAttribute("movieDTO") @Validated MovieDTO movieDTO, BindingResult bindingResult) {
+        movieValidator.validate(movieDTO, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "/new/movie";
         }
-        movieService.save(movie);
+
+        mainService.save(movieDTO);
+
         return "redirect:/";
     }
 
     @PostMapping("/director")
-    public String createDirector(@ModelAttribute("director") Director director, BindingResult bindingResult) {
+    public String createDirector(@ModelAttribute("director") DirectorDTO directorDTO, BindingResult bindingResult) {
+        directorValidator.validate(directorDTO, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "/new/director";
         }
-        directorService.save(director);
+
+        mainService.save(directorDTO);
         return "redirect:/";
     }
 
     @PostMapping("/book")
-    public String createBook(@ModelAttribute("book") Book book, BindingResult bindingResult) {
+    public String createBook(@ModelAttribute("book") BookDTO bookDTO, BindingResult bindingResult) {
+        bookValidator.validate(bookDTO, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "/new/book";
         }
-        bookService.save(book);
+        mainService.save(bookDTO);
         return "redirect:/";
     }
 }

@@ -14,11 +14,12 @@
   <input type="text" th:field="*{author}" id="author"/>
   <div style="color:darkred" th:if="${#fields.errors('author')}" th:errors="*{author}"></div>
   <br>
-  <label for="genre">Enter a movie description</label>
+  <label for="genre">Enter genre</label>
   <input type="text" th:field="*{genre}" id="genre"/>
   <div style="color:darkred" th:if="${#fields.errors('genre')}" th:errors="*{genre}"></div>
   <br>
   <input type="submit" value="create">
 </form>
+<a href="/">back</a>
 </body>
 </html>

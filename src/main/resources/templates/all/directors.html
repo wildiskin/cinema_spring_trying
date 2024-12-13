@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:each="dir : ${directors}">
+    <span th:text="${dir.getName()}"></span>
+    <div th:each="m : ${dir.getOwnMovies()}">
+        <span th:text="${m}"></span>
+        <br>
+    </div>
+    <hr>
+</div>
+<a href="/">Back to main page</a>
+</body>
+</html>

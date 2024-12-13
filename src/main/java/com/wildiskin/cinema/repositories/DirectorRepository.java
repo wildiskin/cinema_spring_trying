@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DirectorRepository extends JpaRepository<Director, Integer> {
+    public Director findByName(String Name);
+    public void deleteByName(String name);
 }

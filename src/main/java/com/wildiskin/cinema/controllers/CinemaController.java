@@ -13,4 +13,5 @@ public class CinemaController {
     public String mainPage() {
         return "index";
     }
+
 }
