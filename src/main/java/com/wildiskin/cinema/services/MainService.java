@@ -12,12 +12,14 @@ import com.wildiskin.cinema.repositories.DirectorRepository;
 import com.wildiskin.cinema.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+//@Transactional
 public class MainService {
     public BookRepository bookRepository;
     public MovieRepository movieRepository;
@@ -36,7 +38,7 @@ public class MainService {
             superPosMovie = new Movie(movieDTO.getName(), movieDTO.getYear(), movieDTO.getDescription());
 
 
-            if (movieDTO.getDirector() != null) {  //director block
+            if (movieDTO.getDirector() != null && !movieDTO.getDirector().isEmpty()) {  //director block
                 Director director = directorRepository.findByName(movieDTO.getDirector());
                 if (director != null) {
                     superPosMovie.setDirector(director);
@@ -45,18 +47,21 @@ public class MainService {
                     director = new Director(movieDTO.getDirector());
                     superPosMovie.setDirector(director);
                 }
+                directorRepository.save(director);
             }
 
-            if (movieDTO.getSourceBook() != null) { //book block
+            if (movieDTO.getSourceBook() != null && !movieDTO.getSourceBook().isEmpty()) { //book block
                 Book book = bookRepository.findByName(movieDTO.getSourceBook());
                 if (book != null) {
                     superPosMovie.setSourceBook(book);
                 }
                 else {
-                    book = new Book(movieDTO.getName());
+                    book = new Book(movieDTO.getSourceBook());
                     superPosMovie.setSourceBook(book);
                 }
+                bookRepository.save(book);
             }
+            movieRepository.save(superPosMovie);
         }
     }
 
@@ -77,6 +82,7 @@ public class MainService {
                     }
                 }
             }}
+            directorRepository.save(superPosDirector);
         }
     }
 
@@ -86,6 +92,7 @@ public class MainService {
             superPosBook = new Book(bookDTO.getName());
             if (bookDTO.getAuthor() != null) {superPosBook.setAuthor(bookDTO.getAuthor());}
             if (bookDTO.getGenre() != null) {superPosBook.setGenre(bookDTO.getGenre());}
+        bookRepository.save(superPosBook);
         }
     }
 
@@ -101,6 +108,7 @@ public class MainService {
         directorRepository.deleteByName(director.getName());
     }
 
+//    @Transactional(readOnly = true)
     public List<MovieDTO> findAllMovies() {
         List<Movie> list = movieRepository.findAll();
         List<MovieDTO> listDto = new ArrayList<>(list.size());
@@ -117,6 +125,7 @@ public class MainService {
         return listDto;
     }
 
+//    @Transactional(readOnly = true)
     public List<BookDTO> findAllBooks() {
         List<Book> list = bookRepository.findAll();
         List<BookDTO> listDto = new ArrayList<>(list.size());
@@ -127,6 +136,7 @@ public class MainService {
         return listDto;
     }
 
+//    @Transactional(readOnly = true)
     public List<DirectorDTO> findAllDirectors() {
         List<Director> list = directorRepository.findAll();
         List<DirectorDTO> listDto = new ArrayList<>(list.size());
