@@ -10,6 +10,7 @@ import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.repositories.BookRepository;
 import com.wildiskin.cinema.repositories.DirectorRepository;
 import com.wildiskin.cinema.repositories.MovieRepository;
+import com.wildiskin.cinema.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,13 @@ import java.util.stream.Collectors;
 @Service
 //@Transactional
 public class MainService {
-    public BookRepository bookRepository;
-    public MovieRepository movieRepository;
-    public DirectorRepository directorRepository;
+    private final BookRepository bookRepository;
+    private final MovieRepository movieRepository;
+    private final DirectorRepository directorRepository;
+
 
     @Autowired
-    public MainService(BookRepository bookRepository, MovieRepository movieRepository, DirectorRepository directorRepository) {
+    public MainService(BookRepository bookRepository, MovieRepository movieRepository, DirectorRepository directorRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
         this.movieRepository = movieRepository;
         this.directorRepository = directorRepository;
