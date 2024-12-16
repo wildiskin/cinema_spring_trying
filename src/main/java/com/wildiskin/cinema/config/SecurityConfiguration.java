@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
     private final UserService userService;
@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(
                 (auth) -> auth
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 )
                 .httpBasic(Customizer.withDefaults());
 //                .antMatchers("/admin").hasRole("ADMIN")

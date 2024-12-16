@@ -41,12 +41,12 @@ public class NewController {
     }
 
     @GetMapping("/book")
-    public String Book(@ModelAttribute("book") Book book) {
+    public String Book(@ModelAttribute("book") BookDTO bookDTO) {
         return "new/book";
     }
 
     @GetMapping("/director")
-    public String Director(@ModelAttribute("director") Director director) {
+    public String Director(@ModelAttribute("director") DirectorDTO directorDTO) {
         return "new/director";
     }
 
