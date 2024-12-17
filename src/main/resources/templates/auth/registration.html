@@ -5,6 +5,16 @@
     <title>registration</title>
 </head>
 <body>
-
+<form th:method="POST" th:action="@{/auth/registration}" th:object="${user}">
+    <label for="name">Enter a username</label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <div style="color:darkred" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
+    <br>
+    <label for="password">Enter your password</label>
+    <input type="password" th:field="*{password}" id="password"/>
+    <div style="color:darkred" th:if="${#fields.errors('password')}" th:errors="*{password}"></div>
+    <br>
+    <input type="submit" value="create">
+</form>
 </body>
 </html>

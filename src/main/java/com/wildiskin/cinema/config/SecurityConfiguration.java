@@ -30,11 +30,31 @@ public class SecurityConfiguration {
 
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                (auth) -> auth
-                        .anyRequest()
-                        .permitAll()
+        http
+                .authorizeHttpRequests(
+                        (auth) -> auth
+                                .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}").hasAnyAuthority("ROLE_ADMIN", "MODERATOR")
+                                .requestMatchers("/auth/registration", "/auth/login").permitAll()
+                                .anyRequest().authenticated()
                 )
+                .formLogin(
+                        (auth) -> auth
+                                .loginPage("/auth/login")
+                                .loginProcessingUrl("/process_login")
+                                .defaultSuccessUrl("/")
+                                .failureUrl("/auth/login?error")
+
+                )
+                .logout(
+                        (auth) -> auth
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/auth/login")
+                )
+                .csrf((auth) -> auth.ignoringRequestMatchers("api/addUser"))
+//                .servletApi(
+//                        (auth) -> auth
+//                                .
+//                )
                 .httpBasic(Customizer.withDefaults());
 //                .antMatchers("/admin").hasRole("ADMIN")
 //                .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()

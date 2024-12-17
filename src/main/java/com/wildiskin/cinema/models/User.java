@@ -1,5 +1,6 @@
 package com.wildiskin.cinema.models;
 
+import com.wildiskin.cinema.util.Roles;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,18 @@ public class User {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "role")
+    private String role;
+
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public User() {
     }

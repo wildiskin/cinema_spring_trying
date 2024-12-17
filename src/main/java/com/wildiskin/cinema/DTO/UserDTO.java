@@ -1,5 +1,6 @@
 package com.wildiskin.cinema.DTO;
 
+import com.wildiskin.cinema.util.Roles;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,9 +14,28 @@ public class UserDTO {
     @Length(min = 8, max = 50)
     private String password;
 
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(@NotNull String role) {
+        this.role = role;
+    }
+
+    public UserDTO() {
+    }
+
     public UserDTO(String name, String password) {
         this.name = name;
         this.password = password;
+    }
+
+    public UserDTO(String name, String password, String role) {
+        this.name = name;
+        this.password = password;
+        this.role = role;
     }
 
     public String getName() {

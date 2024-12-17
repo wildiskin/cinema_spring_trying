@@ -8,12 +8,12 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 @Component
-public class UserValidator implements Validator {
+public class UserValidatorReg implements Validator {
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserValidator(UserRepository userRepository) {
+    public UserValidatorReg(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
