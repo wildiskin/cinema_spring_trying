@@ -5,7 +5,10 @@ import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
-import com.wildiskin.cinema.services.MainService;
+import com.wildiskin.cinema.services.BookService;
+import com.wildiskin.cinema.services.DirectorService;
+
+import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.util.BookValidator;
 import com.wildiskin.cinema.util.DirectorValidator;
 import com.wildiskin.cinema.util.MovieValidator;
@@ -22,14 +25,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/new")
 public class NewController {
 
-    private final MainService mainService;
+    private final MovieService movieService;
+    private final DirectorService directorService;
+    private final BookService bookService;
     private final MovieValidator movieValidator;
     private final BookValidator bookValidator;
     private final DirectorValidator directorValidator;
 
     @Autowired
-    public NewController(MainService mainService, MovieValidator movieValidator, BookValidator bookValidator, DirectorValidator directorValidator) {
-        this.mainService = mainService;
+    public NewController(MovieService movieService, DirectorService directorService, BookService bookService, MovieValidator movieValidator, BookValidator bookValidator, DirectorValidator directorValidator) {
+        this.movieService = movieService;
+        this.directorService = directorService;
+        this.bookService = bookService;
         this.movieValidator = movieValidator;
         this.bookValidator = bookValidator;
         this.directorValidator = directorValidator;
@@ -58,7 +65,7 @@ public class NewController {
             return "/new/movie";
         }
 
-        mainService.save(movieDTO);
+        movieService.save(movieDTO);
 
         return "redirect:/";
     }
@@ -71,7 +78,7 @@ public class NewController {
             return "/new/director";
         }
 
-        mainService.save(directorDTO);
+        directorService.save(directorDTO);
         return "redirect:/";
     }
 
@@ -82,7 +89,8 @@ public class NewController {
         if (bindingResult.hasErrors()) {
             return "/new/book";
         }
-        mainService.save(bookDTO);
+
+        bookService.save(bookDTO);
         return "redirect:/";
     }
 }

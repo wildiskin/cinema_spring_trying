@@ -5,7 +5,9 @@ import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.services.MainService;
+import com.wildiskin.cinema.services.BookService;
+import com.wildiskin.cinema.services.DirectorService;
+import com.wildiskin.cinema.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,30 +22,33 @@ import java.util.stream.Collectors;
 @RequestMapping("/all")
 public class ShowAllController {
 
-    private final MainService mainService;
+    private final MovieService movieService;
+    private final DirectorService directorService;
+    private final BookService bookService;
 
     @Autowired
-    public ShowAllController(MainService mainService) {
-        this.mainService = mainService;
+    public ShowAllController(MovieService movieService, DirectorService directorService, BookService bookService) {
+        this.movieService = movieService;
+        this.directorService = directorService;
+        this.bookService = bookService;
     }
-
 
     @GetMapping("/movies")
     public String showMovies(Model model) {
-        model.addAttribute("movies", mainService.findAllMovies());
+        model.addAttribute("movies", movieService.findAllDto());
         return "all/movies";
     }
 
     @GetMapping("/directors")
     public String showDirectors(Model model) {
-        model.addAttribute("directors", mainService.findAllDirectors());
+        model.addAttribute("directors", directorService.findAllDto());
 
         return "all/directors";
     }
 
     @GetMapping("/books")
     public String showBooks(Model model) {
-        model.addAttribute("books", mainService.findAllBooks());
+        model.addAttribute("books", bookService.findAllDto());
 
         return "all/books";
     }

@@ -1,20 +1,23 @@
 package com.wildiskin.cinema.DTO;
 
-import com.wildiskin.cinema.models.Movie;
 import org.hibernate.validator.constraints.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DirectorDTO implements DtoI{
+public class DirectorDTO {
     @Length(min = 2, max = 50, message = "Имя режиссера должно быть от 2 до 50 символов")
     String name;
-    List<String> ownMovies;
 
-    public DirectorDTO() {}
+    List<String> movies;
 
-    public DirectorDTO(String name, List<String> ownMovies) {
+    public DirectorDTO() {
+        this.movies = new ArrayList<>();
+    }
+
+    public DirectorDTO(String name) {
         this.name = name;
-        this.ownMovies = ownMovies;
+        this.movies = new ArrayList<>();
     }
 
     public String getName() {
@@ -25,11 +28,13 @@ public class DirectorDTO implements DtoI{
         this.name = name;
     }
 
-    public List<String> getOwnMovies() {
-        return ownMovies;
+    public List<String> getMovies() {
+        return movies;
     }
 
-    public void setOwnMovies(List<String> ownMovies) {
-        this.ownMovies = ownMovies;
+    public void setMovies(List<String> movies) {
+        this.movies = movies;
     }
 }
+
+

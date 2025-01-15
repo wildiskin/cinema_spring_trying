@@ -3,7 +3,7 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.services.MainService;
+import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.services.RegisterService;
 import com.wildiskin.cinema.services.UserService;
 import com.wildiskin.cinema.util.UserErrorResponse;
@@ -26,20 +26,25 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api")
 public class AdminController {
-    private final MainService mainService;
+    private final MovieService movieService;
     private final RegisterService registerService;
     private final UserService userService;
 
     @Autowired
-    public AdminController(MainService mainService, RegisterService registerService, UserService userService) {
-        this.mainService = mainService;
+    public AdminController(MovieService movieService, RegisterService registerService, UserService userService) {
+        this.movieService = movieService;
         this.registerService = registerService;
         this.userService = userService;
     }
 
     @GetMapping("/showAllMovies")
     public List<MovieDTO> showMovies() {
-        return mainService.findAllMovies();
+        return movieService.findAllDto();
+    }
+
+    @GetMapping("/showAllUsers")
+    public List<UserDTO> showUsers() {
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")

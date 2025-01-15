@@ -3,7 +3,6 @@ package com.wildiskin.cinema.util;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.repositories.MovieRepository;
-import com.wildiskin.cinema.services.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

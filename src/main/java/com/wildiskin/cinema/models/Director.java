@@ -3,6 +3,7 @@ package com.wildiskin.cinema.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,7 @@ public class Director {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(name="name")
     private String name;
@@ -31,11 +32,15 @@ public class Director {
     }
 
     public Director() {
+        this.movies = new ArrayList<>();
     }
 
-    public Director(String name) {this.name = name;}
+    public Director(String name) {
+        this.name = name;
+        this.movies = new ArrayList<>();
+    }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

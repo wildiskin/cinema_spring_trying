@@ -9,7 +9,7 @@ public class Movie {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private long id;
 
     @Column(name="name")
     private String name;
@@ -48,7 +48,7 @@ public class Movie {
                 '}';
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

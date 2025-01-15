@@ -1,10 +1,9 @@
 package com.wildiskin.cinema.DTO;
 
-import com.wildiskin.cinema.models.Book;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
-public class BookDTO implements DtoI{
+public class BookDTO {
     @Length(max = 50, message = "Название не должно превышать 50 символов")
     @NotNull(message = "У книги должно быть указано название")
     private String name;
