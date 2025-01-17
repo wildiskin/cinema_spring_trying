@@ -9,7 +9,7 @@ import org.springframework.validation.Validator;
 
 @Component
 public class BookValidator implements Validator {
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     @Autowired
     public BookValidator(BookRepository bookRepository) {

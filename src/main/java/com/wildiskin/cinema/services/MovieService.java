@@ -8,6 +8,7 @@ import com.wildiskin.cinema.repositories.BookRepository;
 import com.wildiskin.cinema.repositories.DirectorRepository;
 import com.wildiskin.cinema.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,4 +105,14 @@ public class MovieService {
         return book;
     }
 
+
+    public List<MovieDTO> findAllMoviesByDirectorName(String directorName) {
+        List<Movie> list = movieRepository.findAllMoviesByDirectorName(directorName);
+        List<MovieDTO> listDto = new ArrayList<>(list.size());
+        for (Movie m : list) {
+            MovieDTO movie = new MovieDTO(m.getName(), m.getYear(), m.getDescription());
+            listDto.add(movie);
+        }
+        return listDto;
+    }
 }

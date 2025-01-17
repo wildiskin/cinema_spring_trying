@@ -31,7 +31,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
+                                .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers", "/api/updateUser", "/api/deleteUser/", "api/showAllDirectorsFilmsBy/").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
                                 .requestMatchers("/auth/registration", "/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -48,12 +48,11 @@ public class SecurityConfiguration {
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/auth/login")
                 )
-                .csrf((auth) -> auth.ignoringRequestMatchers("api/addUser"))
+                .csrf((auth) -> auth.ignoringRequestMatchers("api/addUser", "api/updateUser"))
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
-    // Настраиваем аутентификацию
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
                 .passwordEncoder(getPasswordEncoder());
@@ -61,6 +60,6 @@ public class SecurityConfiguration {
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2A);
     }
 }

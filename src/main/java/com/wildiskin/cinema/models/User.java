@@ -21,15 +21,6 @@ public class User {
     @Column(name = "role")
     private String role;
 
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public User() {
     }
 
@@ -38,13 +29,30 @@ public class User {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+
+        String rol = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        for (Roles r : Roles.values()) {
+            if (r.name().equalsIgnoreCase(rol)) {
+                this.role = r.name();
+                return;
+            }
+        }
+        this.role = "ROLE_USER";
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
+
 
     public String getName() {
         return name;

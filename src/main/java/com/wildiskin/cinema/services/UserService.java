@@ -43,7 +43,11 @@ public class UserService implements UserDetailsService {
             throw new UserNotFoundException("There is not user with this username in app");
         }
         User user = superPosUser.get();
-        return new UserDTO(user.getName(), user.getPassword(), user.getRole());
+        return new UserDTO(user.getId(), user.getName(), user.getPassword(), user.getRole());
+    }
+
+    public void deleteById(long id) {
+        userRepository.deleteById((int) id);
     }
 
     public List<UserDTO> findAll() {

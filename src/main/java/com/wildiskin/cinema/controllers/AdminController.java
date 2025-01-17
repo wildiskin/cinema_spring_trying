@@ -3,6 +3,7 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.models.Movie;
+import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.services.RegisterService;
 import com.wildiskin.cinema.services.UserService;
@@ -24,7 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("/api")
 public class AdminController {
     private final MovieService movieService;
     private final RegisterService registerService;
@@ -52,7 +53,7 @@ public class AdminController {
         return userService.findById(id);
     }
 
-    @PostMapping("addUser")
+    @PostMapping("/addUser")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -65,6 +66,38 @@ public class AdminController {
         registerService.save(userDTO);
 
         return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PostMapping("/updateUser")
+    public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<String> errors = bindingResult.getFieldErrors().stream().map(e -> e.getField() + " - " + e.getDefaultMessage() + ";").collect(Collectors.toList());
+            for (String text : errors) {errorMsg.append(text);}
+
+            throw new UserNotCreatedException(errorMsg.toString());
+        }
+
+        registerService.update(userDTO);
+
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @GetMapping("/deleteUser/{id}")
+    public HttpEntity<HttpStatus> delete(@PathVariable("id") long id) {
+        UserDTO user = userService.findById((int) id);
+        if (user == null)
+            throw new UserNotFoundException("User with this id wasn't found");
+        else {
+            userService.deleteById(id);
+            return ResponseEntity.ok(HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("showAllDirectorsFilmsBy/{name}")
+    public List<MovieDTO> show(@PathVariable("name") String directorName) {
+        return movieService.findAllMoviesByDirectorName(directorName);
     }
 
     @ExceptionHandler

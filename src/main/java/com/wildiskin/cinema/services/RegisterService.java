@@ -4,9 +4,12 @@ import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.repositories.UserRepository;
 import com.wildiskin.cinema.util.Roles;
+import com.wildiskin.cinema.util.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RegisterService {
@@ -23,16 +26,23 @@ public class RegisterService {
         String password = passwordEncoder.encode(userDTO.getPassword());
         User user = new User(userDTO.getName(), password);
 
-        if (userDTO.getRole() != null) {
-            for (Roles role : Roles.values()) {
-                if (role.name().equalsIgnoreCase(userDTO.getRole())) {
-                    user.setRole(role.name());
-                }
-            }
-        }
-        else {
-            user.setRole(Roles.ROLE_USER.name());
-        }
+        user.setRole(userDTO.getRole());
+
         userRepository.save(user);
+    }
+
+    public void update(UserDTO userDTO) {
+        long id = userDTO.getId();
+        Optional<User> user = userRepository.findById((int) id);
+        if (!user.isPresent())
+            throw new UserNotFoundException("User with this id: " + id + " isn't exist");
+        else {
+            User u = user.get();
+            u.setName(userDTO.getName());
+            u.setRole(userDTO.getRole());
+            u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            u.setId(id);
+            userRepository.save(u);
+        }
     }
 }

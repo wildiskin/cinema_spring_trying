@@ -6,6 +6,8 @@ import org.hibernate.validator.constraints.Length;
 
 public class UserDTO {
 
+    public long id;
+
     @NotNull(message = "username is required")
     @Length(min = 2, max = 50)
     private String name;
@@ -38,6 +40,13 @@ public class UserDTO {
         this.role = role;
     }
 
+    public UserDTO(long id, String name, String password, String role) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+    }
+
     public String getName() {
         return name;
     }
@@ -52,5 +61,13 @@ public class UserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

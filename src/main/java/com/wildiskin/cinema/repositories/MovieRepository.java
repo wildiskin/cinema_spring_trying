@@ -1,7 +1,9 @@
 package com.wildiskin.cinema.repositories;
 
+import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +19,7 @@ public interface MovieRepository  extends JpaRepository<Movie, Integer> {
     public void deleteByName(String name);
 
     public void deleteById(long id);
+
+    @Query(value = "SELECT m FROM Movie m WHERE m.director.name = ?1")
+    public List<Movie> findAllMoviesByDirectorName(String directorName);
 }
