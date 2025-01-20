@@ -54,4 +54,8 @@ public class DirectorService {
         }
         return finalList;
     }
+
+    public Director findById(long l) {
+        return directorRepository.findById(l);
+    }
 }

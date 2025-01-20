@@ -100,6 +100,11 @@ public class AdminController {
         return movieService.findAllMoviesByDirectorName(directorName);
     }
 
+    @GetMapping("showAllDirectorsFilmsByDirector")
+    public List<MovieDTO> showByParams(String director) {
+        return movieService.findAllMoviesByDirectorName(director);
+    }
+
     @ExceptionHandler
     private ResponseEntity<UserErrorResponse> exceptionHandler(UserNotFoundException e) {
         UserErrorResponse response = new UserErrorResponse(

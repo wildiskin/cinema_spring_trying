@@ -31,7 +31,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers", "/api/updateUser", "/api/deleteUser/", "api/showAllDirectorsFilmsBy/").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
+                                .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers", "/api/updateUser", "/api/deleteUser/", "/api/showAllDirectorsFilmsBy/", "/api/showAllDirectorsFilmsByDirector").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
                                 .requestMatchers("/auth/registration", "/auth/login").permitAll()
                                 .anyRequest().authenticated()
                 )

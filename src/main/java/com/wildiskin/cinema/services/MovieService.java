@@ -111,6 +111,9 @@ public class MovieService {
         List<MovieDTO> listDto = new ArrayList<>(list.size());
         for (Movie m : list) {
             MovieDTO movie = new MovieDTO(m.getName(), m.getYear(), m.getDescription());
+            movie.setDirector(m.getDirector().getName());
+            Book book = m.getSourceBook();
+            if (book != null) {movie.setSourceBook(book.getName());}
             listDto.add(movie);
         }
         return listDto;
