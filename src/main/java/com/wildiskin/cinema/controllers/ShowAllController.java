@@ -36,6 +36,7 @@ public class ShowAllController {
     @GetMapping("/movies")
     public String showMovies(Model model) {
         model.addAttribute("movies", movieService.findAllDto());
+
         return "all/movies";
     }
 

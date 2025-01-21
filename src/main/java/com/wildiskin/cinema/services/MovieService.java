@@ -46,7 +46,7 @@ public class MovieService {
 
     }
 
-    public Movie findById(int id) {
+    public Movie findById(long id) {
         return movieRepository.findById(id);
     }
 

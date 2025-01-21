@@ -5,6 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-
+<div th:object="${movie}">
+    <span th:text="${movie.getName()}"></span>
+    <span th:text="${movie.getYear()}"></span>
+    <span th:text="${movie.getDescription()}"></span>
+    <span th:text="${movie.getSourceBook()}"></span>
+</div>
 </body>
 </html>

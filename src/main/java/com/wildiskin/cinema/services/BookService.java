@@ -43,7 +43,7 @@ public class BookService {
         List<Book> bookList = bookRepository.findAll();
         List<BookDTO> list = new ArrayList<>(bookList.size());
         for (Book b : bookList) {
-            BookDTO bookDTO = new BookDTO(b.getName(), b.getGenre(), b.getAuthor());
+            BookDTO bookDTO = new BookDTO(b.getId(), b.getName(), b.getGenre(), b.getAuthor());
             list.add(bookDTO);
         }
         return list;

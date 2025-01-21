@@ -7,7 +7,9 @@
 <body>
 <div th:object="${director}">
     <span th:text="${director.getName()}"></span>
-    <span th:text="${director.getMovies()}"></span>
+    <div th:each="movie : ${director.getMovies()}">
+        <span th:text="${movie.getName()}"></span>
+    </div>
 </div>
 </body>
 </html>
