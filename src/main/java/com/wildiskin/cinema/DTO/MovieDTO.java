@@ -8,6 +8,8 @@ import org.hibernate.validator.constraints.Length;
 
 public class MovieDTO {
 
+    private long id;
+
     @NotNull(message = "Название фильма - обязательное поле")
     @Length(min = 1, max = 50, message = "Название фильма должно быть от 1 до 50 символов")
     private String name;
@@ -25,7 +27,8 @@ public class MovieDTO {
     @NotNull
     private String description;
 
-    public MovieDTO(String name, int year, String description) {
+    public MovieDTO(long id, String name, int year, String description) {
+        this.id = id;
         this.name = name;
         this.year = year;
         this.description = description;
@@ -73,4 +76,11 @@ public class MovieDTO {
         this.description = description;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

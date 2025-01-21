@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:each="dir : ${directors}">
-    <span th:text="${dir.getName()}"></span>
+    <a th:text="${dir.getName()}" th:href="${'/director/' + dir.getId()}"></a>
     <div th:each="m : ${dir.getMovies()}">
         <span th:text="${m}"></span>
         <br>

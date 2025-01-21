@@ -38,7 +38,7 @@ public class MovieService {
         List<Movie> list = movieRepository.findAll();
         List<MovieDTO> listDto = new ArrayList<>(list.size());
         for (Movie m : list) {
-            MovieDTO movieDTO = new MovieDTO(m.getName(), m.getYear(), m.getDescription());
+            MovieDTO movieDTO = new MovieDTO(m.getId(), m.getName(), m.getYear(), m.getDescription());
             listDto.add(movieDTO);
         }
 
@@ -59,12 +59,12 @@ public class MovieService {
             Director director = getExistOrNewDirectorByName(movieDTO.getDirector());
             director.getMovies().add(movie);
             movie.setDirector(director);
-
+            directorService.update(director);
         }
 
         if (!movieDTO.getSourceBook().equals(null)) {
 
-            Book book = getExistOrNewBookByName(movieDTO.getName());
+            Book book = getExistOrNewBookByName(movieDTO.getSourceBook());
             book.setMovieChildId(movie);
             movie.setSourceBook(book);
 
@@ -91,7 +91,7 @@ public class MovieService {
         Director director = directorService.findByName(name);
         if (director == null) {
             director = new Director(name);
-            directorService.save(director);
+//            directorService.save(director);
         }
         return director;
     }
@@ -100,7 +100,7 @@ public class MovieService {
         Book book = bookService.findByName(name);
         if (book == null) {
             book = new Book(name);
-            bookService.save(book);
+//            bookService.save(book);
         }
         return book;
     }
@@ -110,7 +110,7 @@ public class MovieService {
         List<Movie> list = movieRepository.findAllMoviesByDirectorName(directorName);
         List<MovieDTO> listDto = new ArrayList<>(list.size());
         for (Movie m : list) {
-            MovieDTO movie = new MovieDTO(m.getName(), m.getYear(), m.getDescription());
+            MovieDTO movie = new MovieDTO(m.getId(), m.getName(), m.getYear(), m.getDescription());
             movie.setDirector(m.getDirector().getName());
             Book book = m.getSourceBook();
             if (book != null) {movie.setSourceBook(book.getName());}

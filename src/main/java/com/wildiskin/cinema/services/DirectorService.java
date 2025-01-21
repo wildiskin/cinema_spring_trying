@@ -34,6 +34,16 @@ public class DirectorService {
         director.setName(directorDTO.getName());
     }
 
+    public void update(Director director) {
+        Director existDirector = directorRepository.findById(director.getId());
+        existDirector.setName(director.getName());
+        List<Movie> alsoMovies = existDirector.getMovies();
+        List<Movie> newMovies = director.getMovies();
+        for (Movie m : newMovies) {
+            if (!alsoMovies.contains(m)) {alsoMovies.add(m);}
+        }
+    }
+
     public Director findByName(String name) {
         return directorRepository.findByName(name);
     }
@@ -46,7 +56,7 @@ public class DirectorService {
         List<Director> list = directorRepository.findAll();
         List<DirectorDTO> finalList = new ArrayList<>(list.size());
         for (Director d : list) {
-            DirectorDTO directorDTO = new DirectorDTO(d.getName());
+            DirectorDTO directorDTO = new DirectorDTO(d.getId(), d.getName());
             List<Movie> movies = d.getMovies();
             List<String> directorMovies = movies.equals(null) ? new ArrayList<>() : movies.stream().map((x) -> x.getName()).toList();
             directorDTO.setMovies(directorMovies);
