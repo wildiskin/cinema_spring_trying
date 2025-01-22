@@ -34,16 +34,6 @@ public class DirectorService {
         director.setName(directorDTO.getName());
     }
 
-    public void update(Director director) {
-        Director existDirector = directorRepository.findById(director.getId());
-        existDirector.setName(director.getName());
-        List<Movie> alsoMovies = existDirector.getMovies();
-        List<Movie> newMovies = director.getMovies();
-        for (Movie m : newMovies) {
-            if (!alsoMovies.contains(m)) {alsoMovies.add(m);}
-        }
-    }
-
     public Director findByName(String name) {
         return directorRepository.findByName(name);
     }

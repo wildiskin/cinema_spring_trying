@@ -41,6 +41,12 @@ public class Book {
 
     public Book(String name) {this.name = name;}
 
+    public Book(String name, String author, String genre) {
+        this.name = name;
+        this.author = author;
+        this.genre = genre;
+    }
+
     public long getId() {
         return id;
     }

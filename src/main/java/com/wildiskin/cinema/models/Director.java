@@ -60,7 +60,7 @@ public class Director {
         return movies;
     }
 
-    public void setMovies(List<Movie> movie) {
-        this.movies = movie;
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 }

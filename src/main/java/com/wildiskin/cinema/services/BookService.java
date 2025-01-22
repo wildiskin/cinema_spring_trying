@@ -23,7 +23,7 @@ public class BookService {
     }
 
     public void save(BookDTO bookDTO) {
-        Book book = new Book(bookDTO.getName());
+        Book book = new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getGenre());
         bookRepository.save(book);
     }
 
@@ -55,9 +55,5 @@ public class BookService {
         book.setAuthor(bookDTO.getAuthor());
         book.setGenre(bookDTO.getGenre());
         book.setName(bookDTO.getName());
-    }
-
-    public void update(Book book) {
-
     }
 }

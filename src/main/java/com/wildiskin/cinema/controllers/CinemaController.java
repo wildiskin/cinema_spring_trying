@@ -1,6 +1,7 @@
 package com.wildiskin.cinema.controllers;
 
 
+import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
@@ -47,7 +48,12 @@ public class CinemaController {
     public String movieCard(@PathVariable("id") String id, Model model) {
         Movie movie = movieService.findById(Long.parseLong(id));
         if (movie == null) {throw new NotFoundException("Movie with this id: " + id + " doesn't exists");}
-        model.addAttribute(movie);
+        MovieDTO m = new MovieDTO(movie.getId(), movie.getName(), movie.getYear(), movie.getDescription());
+        String directorName = movie.getDirector() == null ? "unknown director" : movie.getDirector().getName();
+        String bookName = movie.getSourceBook() == null ? "" : movie.getSourceBook().getName();
+        m.setDirector(directorName);
+        m.setSourceBook(bookName);
+        model.addAttribute("movie", m);
         return "cards/movie";
     }
 
