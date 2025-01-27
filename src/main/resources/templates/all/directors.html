@@ -7,12 +7,14 @@
 <body>
 <div th:each="dir : ${directors}">
     <a th:text="${dir.getName()}" th:href="${'/director/' + dir.getId()}"></a>
-    <div th:each="m : ${dir.getMovies()}">
-        <span th:text="${m}"></span>
-        <br>
-    </div>
+<!--    <div th:each="m : ${dir.getMovies()}">-->
+<!--        <span th:text="${m}"></span>-->
+<!--        <br>-->
+<!--    </div>-->
     <hr>
 </div>
-<a href="/">Back to main page</a>
+<form th:action="@{/}" th:method="GET">
+    <input type="submit" value="Back to main page" />
+</form>
 </body>
 </html>

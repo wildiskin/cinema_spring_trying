@@ -8,6 +8,7 @@ import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.services.BookService;
 import com.wildiskin.cinema.services.DirectorService;
 import com.wildiskin.cinema.services.MovieService;
+import com.wildiskin.cinema.util.EntityType;
 import com.wildiskin.cinema.util.NotFoundException;
 import com.wildiskin.cinema.util.UniversalErrorObject;
 import com.wildiskin.cinema.util.UserNotFoundException;
@@ -71,6 +72,25 @@ public class CinemaController {
         if (book == null) {throw new NotFoundException("Book with this id: " + id + " doesn't exists");}
         model.addAttribute(book);
         return "cards/book";
+    }
+
+    @GetMapping("delete/{type}/{id}")
+    public String deleteEntity(@PathVariable("type") String type, @PathVariable("id") String id) {
+        if (type.equalsIgnoreCase(EntityType.BOOK.name())) {
+            Book book = bookService.findById(Long.parseLong(id));
+            System.out.println("deleting process");
+            bookService.delete(Long.parseLong(id));
+        }
+        else if (type.equalsIgnoreCase(EntityType.MOVIE.name())) {
+            movieService.delete(Integer.parseInt(id));
+        }
+        else if (type.equalsIgnoreCase(EntityType.DIRECTOR.name())) {
+            directorService.delete(Integer.parseInt(id));
+        }
+        else {
+            throw new RuntimeException("there is no type for deleting");
+        }
+        return "redirect:/all/" + type.toLowerCase() + "s";
     }
 
     @ExceptionHandler

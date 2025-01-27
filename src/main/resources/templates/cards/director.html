@@ -11,5 +11,8 @@
         <span th:text="${movie.getName()}"></span>
     </div>
 </div>
+<form th:action="@{/all/directors}" th:method="GET">
+    <input type="submit" value="Back to list of directors" />
+</form>
 </body>
 </html>

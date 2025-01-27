@@ -3,6 +3,7 @@ package com.wildiskin.cinema.services;
 import com.wildiskin.cinema.DTO.BookDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.repositories.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,5 +56,10 @@ public class BookService {
         book.setAuthor(bookDTO.getAuthor());
         book.setGenre(bookDTO.getGenre());
         book.setName(bookDTO.getName());
+    }
+
+    @Transactional
+    public void delete(long id) {
+        bookRepository.deleteById(id);
     }
 }

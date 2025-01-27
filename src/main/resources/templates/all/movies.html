@@ -7,14 +7,16 @@
 <body>
 <div th:each="movie : ${movies}">
     <a th:text="${movie.getName()}" th:href="${'/movie/' + movie.getId()}"></a>
-    <br/>
-    <span th:text="${movie.getDirector()}"></span>
-    <br/>
-    <span th:text="${movie.getSourceBook()}"></span>
-    <br/>
-    <span th:text="${movie.getDescription()}"></span>
+<!--    <br/>-->
+<!--    <span th:text="${movie.getDirector()}"></span>-->
+<!--    <br/>-->
+<!--    <span th:text="${movie.getSourceBook()}"></span>-->
+<!--    <br/>-->
+<!--    <span th:text="${movie.getDescription()}"></span>-->
     <hr/>
 </div>
-<a href="/">Back to main page</a>
+<form th:action="@{/}" th:method="GET">
+    <input type="submit" value="Back to main page" />
+</form>
 </body>
 </html>

@@ -29,7 +29,8 @@
     <br>
     <input type="submit" value="create">
 </form>
-<a href="/">back</a>
-
+<form th:action="@{/}" th:method="GET">
+    <input type="submit" value="Back to main page" />
+</form>
 </body>
 </html>

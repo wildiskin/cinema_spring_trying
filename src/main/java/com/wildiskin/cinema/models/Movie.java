@@ -1,6 +1,7 @@
 package com.wildiskin.cinema.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "movie")
@@ -24,7 +25,7 @@ public class Movie {
     @Column(name = "description")
     private String description;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "source_book_id", referencedColumnName = "id")
     private Book sourceBook;
 

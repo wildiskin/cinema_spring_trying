@@ -10,5 +10,14 @@
     <span th:text="${book.getGenre()}"></span>
     <span th:text="${book.getAuthor()}"></span>
 </div>
+<!--<form th:href="@{'/book/' + book.getId()}" th:method="GET">-->
+<!--    <input type="submit" value="Edit" />-->
+<!--</form>-->
+<a th:href="${'/delete/book/' + book.getId()}">
+    <input type="submit" value="Delete" />
+</a>
+<form th:action="@{/all/books}" th:method="GET">
+    <input type="submit" value="Back to list of books" />
+</form>
 </body>
 </html>

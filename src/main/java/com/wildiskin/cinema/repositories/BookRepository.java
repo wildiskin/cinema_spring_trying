@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface BookRepository extends JpaRepository<Book, Integer> {
     public Book findByName(String name);
     public void deleteByName(String name);
+    public void deleteById(long id);
 
     Book findById(long id);
 }

@@ -11,5 +11,8 @@
     <span th:text="${movie.getDescription()}"></span>
     <span th:text="${movie.getSourceBook()}"></span>
 </div>
+<form th:action="@{/all/movies}" th:method="GET">
+    <input type="submit" value="Back to list of movies" />
+</form>
 </body>
 </html>

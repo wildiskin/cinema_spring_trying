@@ -58,4 +58,8 @@ public class DirectorService {
     public Director findById(long l) {
         return directorRepository.findById(l);
     }
+
+    public void delete(long id) {
+        directorRepository.deleteById((int) id);
+    }
 }
