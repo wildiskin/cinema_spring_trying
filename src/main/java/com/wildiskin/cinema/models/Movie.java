@@ -2,6 +2,9 @@ package com.wildiskin.cinema.models;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
+import org.springframework.boot.autoconfigure.web.WebProperties;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "movie")
@@ -25,8 +28,8 @@ public class Movie {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "source_book_id", referencedColumnName = "id")
+    @OneToOne
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book sourceBook;
 
     public Movie() {}
@@ -53,7 +56,7 @@ public class Movie {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

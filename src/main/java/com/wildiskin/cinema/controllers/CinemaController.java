@@ -78,14 +78,19 @@ public class CinemaController {
     public String deleteEntity(@PathVariable("type") String type, @PathVariable("id") String id) {
         if (type.equalsIgnoreCase(EntityType.BOOK.name())) {
             Book book = bookService.findById(Long.parseLong(id));
-            System.out.println("deleting process");
+            if (book.getMovieChild() != null) {book.getMovieChild().setSourceBook(null);}
             bookService.delete(Long.parseLong(id));
         }
         else if (type.equalsIgnoreCase(EntityType.MOVIE.name())) {
-            movieService.delete(Integer.parseInt(id));
+            Movie movie = movieService.findById(Long.parseLong(id));
+            if (movie.getSourceBook() != null) {movie.getSourceBook().setMovieChildId(null);}
+            if (movie.getDirector() != null) {movie.getDirector().getMovies().remove(movie);}
+            movieService.delete(Long.parseLong(id));
         }
         else if (type.equalsIgnoreCase(EntityType.DIRECTOR.name())) {
-            directorService.delete(Integer.parseInt(id));
+            Director director = directorService.findById(Long.parseLong(id));
+            for (Movie m : director.getMovies()) {m.setDirector(null);}
+            directorService.delete(Long.parseLong(id));
         }
         else {
             throw new RuntimeException("there is no type for deleting");

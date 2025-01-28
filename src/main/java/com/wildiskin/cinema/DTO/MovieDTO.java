@@ -23,8 +23,7 @@ public class MovieDTO {
     @Max(value = 2025L, message = "Фильм должен быть вышедшим") //TODO my own annotation for comparing with current date
     private int year;
 
-    @Length(max = 150, message = "Описание не должно занимать более 150 символов")
-    @NotNull
+    @Length(max = 500, message = "Описание не должно занимать более 150 символов")
     private String description;
 
     public MovieDTO(long id, String name, int year, String description) {

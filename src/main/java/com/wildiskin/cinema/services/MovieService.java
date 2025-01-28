@@ -83,18 +83,20 @@ public class MovieService {
             Book book;
             String bookName = movieDTO.getSourceBook();
             if (bookService.findByName(bookName) == null) {
+                System.out.println("There is no book with name: " + bookName);
                 alsoExist = false;
                 book = new Book(bookName);
             }
             else {
+                for (int i = 0; i < 5; i++) {System.out.println(bookName + "_________________________________________________________________");}
                 book = bookService.findByName(bookName);
                 alsoExist = true;
             }
             book.setMovieChildId(movie);
             movie.setSourceBook(book);
-            if (!alsoExist) {
+//            if (!alsoExist) {
                 bookService.save(book);
-            }
+//            }
         }
         movieRepository.save(movie);
     }

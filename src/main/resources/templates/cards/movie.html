@@ -11,6 +11,11 @@
     <span th:text="${movie.getDescription()}"></span>
     <span th:text="${movie.getSourceBook()}"></span>
 </div>
+<hr/>
+<a th:href="${'/delete/movie/' + movie.getId()}">
+    <input type="submit" value="Delete" />
+</a>
+<hr/>
 <form th:action="@{/all/movies}" th:method="GET">
     <input type="submit" value="Back to list of movies" />
 </form>

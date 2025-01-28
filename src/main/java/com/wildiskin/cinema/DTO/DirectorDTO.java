@@ -1,5 +1,6 @@
 package com.wildiskin.cinema.DTO;
 
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.*;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ public class DirectorDTO {
     private long id;
 
     @Length(min = 2, max = 50, message = "Имя режиссера должно быть от 2 до 50 символов")
+    @NotNull
     private String name;
 
     private List<String> movies;
