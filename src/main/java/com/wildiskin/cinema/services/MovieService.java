@@ -58,7 +58,7 @@ public class MovieService {
     public void save(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO.getName(), movieDTO.getYear(), movieDTO.getDescription());
 
-        if (!(movieDTO.getDirector() == null)) {  //director handling
+        if (movieDTO.getDirector() != null && !movieDTO.getDirector().isBlank()) {  //director handling
 
             boolean alsoExist;
             Director director;
@@ -78,7 +78,7 @@ public class MovieService {
                     directorService.save(director);
         }
 
-        if (movieDTO.getSourceBook() != null) {  //book handle
+        if (movieDTO.getSourceBook() != null && !movieDTO.getSourceBook().isBlank()) {  //book handle
             boolean alsoExist;
             Book book;
             String bookName = movieDTO.getSourceBook();
