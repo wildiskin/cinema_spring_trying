@@ -2,6 +2,8 @@ package com.wildiskin.cinema.config;
 
 import com.wildiskin.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,13 +15,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration {
+public class SecurityConfiguration implements WebMvcConfigurer{
 
     private final UserService userService;
+
+    @Value("${app.storage.path}")
+    private String appPath;
 
     @Autowired
     public SecurityConfiguration(UserService userService) {
@@ -32,7 +41,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         (auth) -> auth
                                 .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers", "/api/updateUser", "/api/deleteUser/", "/api/showAllDirectorsFilmsBy/", "/api/showAllDirectorsFilmsByDirector").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
-                                .requestMatchers("/auth/registration", "/auth/login").permitAll()
+                                .requestMatchers("/auth/registration", "/auth/login", "/css/styles.css").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(
@@ -51,6 +60,14 @@ public class SecurityConfiguration {
                 .csrf((auth) -> auth.ignoringRequestMatchers("api/addUser", "api/updateUser"))
                 .httpBasic(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        WebMvcConfigurer.super.addResourceHandlers(registry);
+        registry
+                .addResourceHandler("/**")
+                .addResourceLocations("file:" + appPath + "src/main/resources/static");
     }
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

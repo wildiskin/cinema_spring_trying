@@ -17,6 +17,8 @@ public class BookDTO {
     @Length(max = 50, message = "Имя автора не должно превышать 50 символов")
     private String author;
 
+    private String movieChildName;
+
     public BookDTO() {
     }
 
@@ -57,5 +59,13 @@ public class BookDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getMovieChildName() {
+        return movieChildName;
+    }
+
+    public void setMovieChildName(String movieChildName) {
+        this.movieChildName = movieChildName;
     }
 }

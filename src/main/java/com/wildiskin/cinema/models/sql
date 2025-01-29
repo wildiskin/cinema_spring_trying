@@ -1,0 +1,18 @@
+INSERT INTO book (name, genre, author) VALUES
+    ('bible', 'religion', 'unknown'),
+    ('Koran', 'religion', 'unknown'),
+    ('Nameless slave', 'adventure', 'Zykov'),
+    ('War and Peace v1', 'realism', 'Tolstoi'),
+    ('War and Peace v2', 'realism', 'Tolstoi'),
+    ('War and Peace v3', 'realism', 'Tolstoi');
+
+INSERT INTO director (name) VALUES
+    ('Quentin Tarantino'),
+    ('Edward Snowden'),
+    ('Unknown'),
+    ('Steven Spielberg');
+INSERT INTO movie (name, year, description, director_id, book_id) VALUES
+    ('Pulp fiction', 1999, 'classic status in release', 1, null),
+    ('Kill Bill 1', 2001, 'beautiful massacre', 1, null),
+    ('Kill Bill 2', 2001, 'beautiful massacre', 1, null),
+    ('All quiet on the western front', 2020, 'War between Germany and France', 2, null);

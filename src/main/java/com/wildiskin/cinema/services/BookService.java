@@ -50,12 +50,8 @@ public class BookService {
         return list;
     }
 
-    public void update(long id, BookDTO bookDTO) {
-        Book book = bookRepository.findById(id);
-//        book.setMovieChildId();
-        book.setAuthor(bookDTO.getAuthor());
-        book.setGenre(bookDTO.getGenre());
-        book.setName(bookDTO.getName());
+    public void update() {
+
     }
 
     @Transactional

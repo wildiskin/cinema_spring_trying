@@ -50,6 +50,10 @@ public class MovieService {
 
     }
 
+    public Movie findByName(String name) {
+        return movieRepository.findByName(name);
+    }
+
     public Movie findById(long id) {
         return movieRepository.findById(id);
     }
@@ -83,12 +87,10 @@ public class MovieService {
             Book book;
             String bookName = movieDTO.getSourceBook();
             if (bookService.findByName(bookName) == null) {
-                System.out.println("There is no book with name: " + bookName);
                 alsoExist = false;
                 book = new Book(bookName);
             }
             else {
-                for (int i = 0; i < 5; i++) {System.out.println(bookName + "_________________________________________________________________");}
                 book = bookService.findByName(bookName);
                 alsoExist = true;
             }
@@ -102,11 +104,7 @@ public class MovieService {
     }
 
     @Transactional
-    public void update(long id, MovieDTO editedMovie) {
-        Movie movie = movieRepository.findById(id);
-        movie.setName(editedMovie.getName());
-        movie.setYear(editedMovie.getYear());
-        movie.setDescription(editedMovie.getDescription());
+    public void update() {
 
     }
 
