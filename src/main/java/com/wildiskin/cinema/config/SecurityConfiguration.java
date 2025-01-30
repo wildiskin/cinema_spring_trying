@@ -10,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,14 +22,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@EnableWebMvc
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfiguration implements WebMvcConfigurer{
+public class SecurityConfiguration { //implements WebMvcConfigurer
 
     private final UserService userService;
 
-    @Value("${app.storage.path}")
-    private String appPath;
+//    @Value("${app.storage.path}")
+//    private String appPath;
 
     @Autowired
     public SecurityConfiguration(UserService userService) {
@@ -62,17 +62,24 @@ public class SecurityConfiguration implements WebMvcConfigurer{
         return http.build();
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        WebMvcConfigurer.super.addResourceHandlers(registry);
-        registry
-                .addResourceHandler("/**")
-                .addResourceLocations("file:" + appPath + "src/main/resources/static");
-    }
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        WebMvcConfigurer.super.addResourceHandlers(registry);
+//        registry
+//                .addResourceHandler("resources/**")
+//                .addResourceLocations("file:" + appPath + "/src/main/resources/static");
+//    }
 
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService)
                 .passwordEncoder(getPasswordEncoder());
+    }
+
+
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .requestMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**","/vendor/**","/fonts/**");
     }
 
     @Bean

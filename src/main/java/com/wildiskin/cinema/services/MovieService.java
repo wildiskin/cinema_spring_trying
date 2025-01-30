@@ -104,6 +104,11 @@ public class MovieService {
     }
 
     @Transactional
+    public Movie save(Movie movie) {
+        return movieRepository.save(movie);
+    }
+
+    @Transactional
     public void update() {
 
     }

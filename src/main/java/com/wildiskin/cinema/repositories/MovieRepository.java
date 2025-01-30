@@ -12,6 +12,7 @@ import java.util.List;
 public interface MovieRepository  extends JpaRepository<Movie, Integer> {
     public List<Movie> findAll();
 
+    @Query(value = "SELECT m FROM Movie m WHERE LOWER(m.name) = LOWER(?1)")
     public Movie findByName(String name);
 
     public Movie findById(long id);

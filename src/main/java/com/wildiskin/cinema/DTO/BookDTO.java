@@ -7,14 +7,14 @@ public class BookDTO {
 
     private long id;
 
-    @Length(max = 50, message = "Название не должно превышать 50 символов")
-    @NotNull(message = "У книги должно быть указано название")
+    @Length(min = 1, max = 50, message = "Book's name should be between 1 and 50 characters")
+    @NotNull(message = "Book shall have a name")
     private String name;
 
-    @Length(max = 50, message = "Жанр книги не должен превышать 50 символов")
+    @Length(min = 2, max = 50, message = "Genre's name should be between 1 and 50 characters")
     private String genre;
 
-    @Length(max = 50, message = "Имя автора не должно превышать 50 символов")
+    @Length(min = 1, max = 50, message = "Author's name should be between 1 and 50 characters")
     private String author;
 
     private String movieChildName;

@@ -1,4 +1,11 @@
 body {
-    background-color: #121212;
-    color: #ffffff;
+    background: #404040;
+    color: #E0E0E0;
+}
+a {
+    text-decoration: none;
+    color: #d2d1ff;
+}
+input {
+    background: #C0C0C0;
 }

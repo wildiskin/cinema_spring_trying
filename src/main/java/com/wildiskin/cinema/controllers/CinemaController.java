@@ -20,6 +20,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.support.BindingAwareModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.templateparser.raw.RawParseException;
+
+import java.util.InputMismatchException;
 
 @Controller
 @RequestMapping("/")
@@ -42,7 +45,7 @@ public class CinemaController {
         this.movieValidator = movieValidator;
     }
 
-    @GetMapping()
+    @GetMapping
     public String mainPage() {
         return "index";
     }
@@ -83,34 +86,35 @@ public class CinemaController {
     public String deleteEntity(@PathVariable("type") String type, @PathVariable("id") String id) {
         if (type.equalsIgnoreCase(EntityType.BOOK.name())) {
             Book book = bookService.findById(Long.parseLong(id));
+            if (book == null) {throw new NotFoundException("Book with this id: " + id + " doesn't exists");}
             if (book.getMovieChild() != null) {book.getMovieChild().setSourceBook(null);}
             bookService.delete(Long.parseLong(id));
         }
         else if (type.equalsIgnoreCase(EntityType.MOVIE.name())) {
             Movie movie = movieService.findById(Long.parseLong(id));
+            if (movie == null) {throw new NotFoundException("Movie with this id: " + id + " doesn't exists");}
             if (movie.getSourceBook() != null) {movie.getSourceBook().setMovieChildId(null);}
             if (movie.getDirector() != null) {movie.getDirector().getMovies().remove(movie);}
             movieService.delete(Long.parseLong(id));
         }
         else if (type.equalsIgnoreCase(EntityType.DIRECTOR.name())) {
             Director director = directorService.findById(Long.parseLong(id));
+            if (director == null) {throw new NotFoundException("Director with this id: " + id + " doesn't exists");}
             for (Movie m : director.getMovies()) {m.setDirector(null);}
             directorService.delete(Long.parseLong(id));
         }
         else {
-            throw new RuntimeException("there is no type for deleting");
+            throw new InputMismatchException("There is no type to handle");
         }
         return "redirect:/all/" + type.toLowerCase() + "s";
     }
 
     @PostMapping("update/book")
     public String updateBook(@ModelAttribute("book") @Validated BookDTO bookDTO, BindingResult bindingResult) {
+        if (bookService.findById(bookDTO.getId()) == null) {bindingResult.rejectValue("id", "", "Book with this id: " + bookDTO.getId() + " doesn't exists");}
         Movie movie = movieService.findByName(bookDTO.getMovieChildName());
-        if (movie == null) {bindingResult.rejectValue("movieChildName", "", "You can add films only from collection");}
-        if (((Long) bookDTO.getId()) == null) {bindingResult.rejectValue("name", "", "There is no id");}
-        System.out.println(bookDTO.getId());
         if (bindingResult.hasErrors()) {
-            return "book/" + 4;
+            return "cards/book";
         }
         Book book = bookService.findById(bookDTO.getId());
         book.setName(bookDTO.getName());
@@ -118,6 +122,8 @@ public class CinemaController {
         book.setGenre(bookDTO.getGenre());
         book.setMovieChildId(movie);
         bookService.save(book);
+        movie.setSourceBook(book);
+        movieService.save(movie);
         return "redirect:/all/books";
     }
 

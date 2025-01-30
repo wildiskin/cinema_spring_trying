@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>book</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
 <!--<div th:object="${book}">-->
@@ -13,22 +13,23 @@
 <!--</div>-->
 <form th:method="POST" th:action="@{/update/book}" th:object="${book}">
     <label for="id"></label>
-    <input type="text" th:field="*{id}" id="id" hidden>
+    <div style="color:#FF0000" th:if="${#fields.errors('id')}" th:errors="*{id}"></div>
+    <input type="hidden" th:field="*{id}" id="id">
     <label for="name">Name</label>
-    <input type="text" th:field="*{name}" id="name"/>
-    <div style="color:darkred" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
+    <input type="text"  th:field="*{name}" id="name"/>
+    <div style="color:#FF0000" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
     <hr/>
     <label for="genre">Genre</label>
     <input type="text" th:field="*{genre}"  id="genre"/>
-    <div style="color:darkred" th:if="${#fields.errors('genre')}" th:errors="*{genre}"></div>
+    <div style="color:#FF0000" th:if="${#fields.errors('genre')}" th:errors="*{genre}"></div>
     <hr/>
     <label for="author">Author</label>
     <input type="text" th:field="*{author}"  id="author"/>
-    <div style="color:darkred" th:if="${#fields.errors('author')}" th:errors="*{author}"></div>
+    <div style="color:#FF0000" th:if="${#fields.errors('author')}" th:errors="*{author}"></div>
     <hr/>
     <label for="movieChild">Produced film</label>
     <input type="text" th:field="*{movieChildName}" id="movieChild"/>
-    <div style="color:darkred" th:if="${#fields.errors('movieChildName')}" th:errors="*{movieChildName}"></div>
+    <div style="color:#FF0000" th:if="${#fields.errors('movieChildName')}" th:errors="*{movieChildName}"></div>
     <hr/>
     <input type="submit" value="Update">
 </form>
