@@ -23,10 +23,11 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void save(BookDTO bookDTO) {
-        Book book = new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getGenre());
-        bookRepository.save(book);
-    }
+//    public void save(BookDTO bookDTO) {
+//        Book book = new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getGenre());
+//        bookRepository.save(book);
+//
+//    }
 
     public Book findByName(String name) {
         return bookRepository.findByName(name);

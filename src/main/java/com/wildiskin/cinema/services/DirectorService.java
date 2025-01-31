@@ -24,10 +24,10 @@ public class DirectorService {
         directorRepository.save(director);
     }
 
-    public void save(DirectorDTO directorDTO) {
-        Director director = new Director(directorDTO.getName());
-        directorRepository.save(director);
-    }
+//    public void save(DirectorDTO directorDTO) {
+//        Director director = new Director(directorDTO.getName());
+//        directorRepository.save(director);
+//    }
 
     public void update(long id, DirectorDTO directorDTO) {
         Director director = directorRepository.findById(id);

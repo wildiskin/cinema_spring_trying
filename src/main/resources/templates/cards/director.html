@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
-<div th:object="${director}">
-    <span th:text="${director.getName()}"></span>
+<form th:method="POST" th:action="@{update/director}" th:object="${director}">
+    <input type="text" th:text="${director.getName()}" id="name" />
     <div th:each="movie : ${director.getMovies()}">
-        <span th:text="${movie.getName()}"></span>
+        <label for="film">movie:</label>
+        <input th:field="*{movie.getName()}" id="film"/>
     </div>
-</div>
+</form>
 <hr/>
 <a th:href="${'/delete/director/' + director.getId()}">
     <input type="submit" value="Delete" />

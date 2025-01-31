@@ -5,6 +5,7 @@ import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
+import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.services.BookService;
 import com.wildiskin.cinema.services.DirectorService;
 
@@ -78,7 +79,8 @@ public class NewController {
             return "/new/director";
         }
 
-        directorService.save(directorDTO);
+        Director director = new Director(directorDTO.getName());
+        directorService.save(director);
         return "redirect:/";
     }
 
@@ -90,7 +92,15 @@ public class NewController {
             return "/new/book";
         }
 
-        bookService.save(bookDTO);
+        Book book = new Book(bookDTO.getName(), bookDTO.getAuthor(), bookDTO.getGenre());
+        Movie movie = movieService.findByName(bookDTO.getMovieChildName());
+        book.setMovieChildId(movie);
+        bookService.save(book);
+        if (movie != null) {
+            movie.setSourceBook(book);
+            movieService.save(movie);
+        }
+
         return "redirect:/";
     }
 }

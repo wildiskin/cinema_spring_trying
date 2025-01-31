@@ -10,17 +10,15 @@ import com.wildiskin.cinema.services.BookService;
 import com.wildiskin.cinema.services.DirectorService;
 import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.util.*;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.support.BindingAwareModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.templateparser.raw.RawParseException;
 
 import java.util.InputMismatchException;
 
@@ -31,16 +29,16 @@ public class CinemaController {
     private final MovieService movieService;
     private final BookService bookService;
     private final DirectorService directorService;
-    private final BookValidator bookValidator;
+    private final BookUpdateValidator bookUpdateValidator;
     private final DirectorValidator directorValidator;
     private final MovieValidator movieValidator;
 
     @Autowired
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookValidator bookValidator, DirectorValidator directorValidator, MovieValidator movieValidator) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorValidator directorValidator, MovieValidator movieValidator) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
-        this.bookValidator = bookValidator;
+        this.bookUpdateValidator = bookUpdateValidator;
         this.directorValidator = directorValidator;
         this.movieValidator = movieValidator;
     }
@@ -111,24 +109,42 @@ public class CinemaController {
 
     @PostMapping("update/book")
     public String updateBook(@ModelAttribute("book") @Validated BookDTO bookDTO, BindingResult bindingResult) {
-        if (bookService.findById(bookDTO.getId()) == null) {bindingResult.rejectValue("id", "", "Book with this id: " + bookDTO.getId() + " doesn't exists");}
-        Movie movie = movieService.findByName(bookDTO.getMovieChildName());
+        bookUpdateValidator.validate(bookDTO, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "cards/book";
         }
+
         Book book = bookService.findById(bookDTO.getId());
         book.setName(bookDTO.getName());
         book.setAuthor(bookDTO.getAuthor());
         book.setGenre(bookDTO.getGenre());
-        book.setMovieChildId(movie);
+        Movie movie = movieService.findByName(bookDTO.getMovieChildName());
+
+        Movie existingMovie = book.getMovieChild();
+
+        if (movie != null) {
+            existingMovie.setSourceBook(null);
+            book.setMovieChildId(movie);
+            movie.setSourceBook(book);
+            movieService.save(movie);
+        }
+        else {
+            book.setMovieChildId(null);
+            existingMovie.setSourceBook(null);
+        }
+
         bookService.save(book);
-        movie.setSourceBook(book);
-        movieService.save(movie);
         return "redirect:/all/books";
     }
 
     @ExceptionHandler
     public ResponseEntity<String> handlerInvalidIdInput(NotFoundException er) {
         return new ResponseEntity<>(er.getMessage() + " <a href='/'>back</a>", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
+        return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
     }
 }

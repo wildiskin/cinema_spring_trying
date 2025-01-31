@@ -19,6 +19,10 @@
   <input type="text" th:field="*{genre}" id="genre"/>
   <div style="color:darkred" th:if="${#fields.errors('genre')}" th:errors="*{genre}"></div>
   <br>
+  <label for="movieChild">Enter movie based on this book</label>
+  <input type="text" th:field="*{movieChildName}" id="movieChild"/>
+  <div style="color:darkred" th:if="${#fields.errors('movieChildName')}" th:errors="*{movieChildName}"></div>
+  <br>
   <input type="submit" value="create">
 </form>
 <form th:action="@{/}" th:method="GET">
