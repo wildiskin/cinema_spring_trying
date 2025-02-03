@@ -4,6 +4,7 @@ import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.repositories.DirectorRepository;
+import com.wildiskin.cinema.util.MovieNameId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,15 +45,15 @@ public class DirectorService {
 
     public List<DirectorDTO> findAllDto() {
         List<Director> list = directorRepository.findAll();
-        List<DirectorDTO> finalList = new ArrayList<>(list.size());
+        List<DirectorDTO> finaList = new ArrayList<>(list.size());
         for (Director d : list) {
             DirectorDTO directorDTO = new DirectorDTO(d.getId(), d.getName());
             List<Movie> movies = d.getMovies();
-            List<String> directorMovies = movies.equals(null) ? new ArrayList<>() : movies.stream().map((x) -> x.getName()).toList();
+            List<MovieNameId> directorMovies = movies.equals(null) ? new ArrayList<>() : movies.stream().map((x) -> new MovieNameId(x.getId(), x.getName())).toList();
             directorDTO.setMovies(directorMovies);
-            finalList.add(directorDTO);
+            finaList.add(directorDTO);
         }
-        return finalList;
+        return finaList;
     }
 
     public Director findById(long l) {

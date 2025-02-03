@@ -6,20 +6,36 @@
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
-<form th:method="POST" th:action="@{update/director}" th:object="${director}">
-    <input type="text" th:text="${director.getName()}" id="name" />
-    <div th:each="movie : ${director.getMovies()}">
-        <label for="film">movie:</label>
-        <input th:field="*{movie.getName()}" id="film"/>
+<form th:method="POST" th:action="@{/update/director}" th:object="${director}">
+
+    <input type="text"  th:field="*{id}"  hidden />
+    <div style="color:#FF0000" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
+
+    <input type="text" th:field="*{name}" id="name" />
+    <div style="color:#FF0000" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+    <div th:each="movie, itemStat : *{movies}" >
+        <input th:field="*{movies[__${itemStat.index}__].id}" hidden />
+        <a th:href="${'/movie/' + movie.getId()}">
+            <span>movie:</span>
+        </a>
+        <div style="color:#FF0000" th:if="${#fields.hasErrors('movies')}" th:errors="*{movies}" ></div>
+        <input th:field="*{movies[__${itemStat.index}__].name}" />
     </div>
+
+    <input type="submit" value="Update" />
+
 </form>
 <hr/>
-<a th:href="${'/delete/director/' + director.getId()}">
+
+<a th:href="*{'/delete/director/' + id}">
     <input type="submit" value="Delete" />
 </a>
 <hr/>
+
 <form th:action="@{/all/directors}" th:method="GET">
     <input type="submit" value="Back to list of directors" />
 </form>
+
 </body>
 </html>

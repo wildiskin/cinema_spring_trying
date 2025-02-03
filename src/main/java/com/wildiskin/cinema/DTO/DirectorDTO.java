@@ -1,5 +1,7 @@
 package com.wildiskin.cinema.DTO;
 
+import com.wildiskin.cinema.models.Movie;
+import com.wildiskin.cinema.util.MovieNameId;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.*;
 
@@ -10,11 +12,11 @@ public class DirectorDTO {
 
     private long id;
 
-    @Length(min = 2, max = 50, message = "Имя режиссера должно быть от 2 до 50 символов")
+    @Length(min = 2, max = 50, message = "Director's name should be between 2 and 50 characters")
     @NotNull
     private String name;
 
-    private List<String> movies;
+    private List<MovieNameId> movies;
 
     public DirectorDTO() {
         this.movies = new ArrayList<>();
@@ -26,6 +28,12 @@ public class DirectorDTO {
         this.movies = new ArrayList<>();
     }
 
+    public DirectorDTO(long id, String name, List<MovieNameId> movies) {
+        this.id = id;
+        this.name = name;
+        this.movies = movies;
+    }
+
     public String getName() {
         return name;
     }
@@ -34,13 +42,23 @@ public class DirectorDTO {
         this.name = name;
     }
 
-    public List<String> getMovies() {
+    public List<MovieNameId> getMovies() {
         return movies;
     }
 
-    public void setMovies(List<String> movies) {
+    public void setMovies(List<MovieNameId> movies) {
         this.movies = movies;
     }
+
+    public void setMoviesFromMovies(List<Movie> movies) {
+        List<MovieNameId> list = new ArrayList<>(movies.size());
+        for (Movie m : movies) {
+            MovieNameId res = new MovieNameId(m.getId(), m.getName());
+            list.add(res);
+        }
+        this.movies = list;
+    }
+
 
     public long getId() {
         return id;

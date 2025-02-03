@@ -2,6 +2,7 @@ package com.wildiskin.cinema.controllers;
 
 
 import com.wildiskin.cinema.DTO.BookDTO;
+import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
@@ -20,7 +21,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
@@ -30,16 +33,16 @@ public class CinemaController {
     private final BookService bookService;
     private final DirectorService directorService;
     private final BookUpdateValidator bookUpdateValidator;
-    private final DirectorValidator directorValidator;
+    private final DirectorUpdateValidator directorUpdateValidator;
     private final MovieValidator movieValidator;
 
     @Autowired
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorValidator directorValidator, MovieValidator movieValidator) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieValidator movieValidator) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
         this.bookUpdateValidator = bookUpdateValidator;
-        this.directorValidator = directorValidator;
+        this.directorUpdateValidator = directorUpdateValidator;
         this.movieValidator = movieValidator;
     }
 
@@ -65,7 +68,10 @@ public class CinemaController {
     public String directorCard(@PathVariable("id") String id, Model model) {
         Director director = directorService.findById(Long.parseLong(id));
         if (director == null) {throw new NotFoundException("Director with this id: " + id + " doesn't exists");}
-        model.addAttribute(director);
+        DirectorDTO dir = new DirectorDTO(director.getId(), director.getName());
+        dir.setMoviesFromMovies(director.getMovies());
+        model.addAttribute("director", dir);
+//        model.addAttribute("movie", new MovieNameId(-1, "plug"));
         return "cards/director";
     }
 
@@ -136,6 +142,31 @@ public class CinemaController {
 
         bookService.save(book);
         return "redirect:/all/books";
+    }
+
+    @PostMapping("update/director")
+    public String updateDirector(@ModelAttribute("director") @Validated DirectorDTO directorDTO, BindingResult bindingResult) {
+        directorUpdateValidator.validate(directorDTO, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "cards/director";
+        }
+
+        Director director = directorService.findById(directorDTO.getId());
+        List<MovieNameId> movieList = directorDTO.getMovies();
+        List<Movie> list = new ArrayList<>(movieList.size());
+        for (MovieNameId mni : movieList) {
+
+            Movie movie = movieService.findByName(mni.getName());
+            list.add(movie);
+            movie.setDirector(director);
+            movieService.save(movie);
+        }
+        director.setName(directorDTO.getName());
+        director.setMovies(list);
+        directorService.save(director);
+
+        return "redirect:/all/directors";
     }
 
     @ExceptionHandler
