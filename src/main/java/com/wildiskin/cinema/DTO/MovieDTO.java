@@ -1,5 +1,7 @@
 package com.wildiskin.cinema.DTO;
 
+import com.wildiskin.cinema.util.BookNameId;
+import com.wildiskin.cinema.util.DirectorNameId;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -14,8 +16,8 @@ public class MovieDTO {
     @Length(min = 1, max = 50, message = "Название фильма должно быть от 1 до 50 символов")
     private String name;
 
-    private String director;
-    private String sourceBook;
+    private DirectorNameId director;
+    private BookNameId sourceBook;
 
     @NotNull
     @Digits(integer = 4, fraction = 0, message = "Укажите реальный год")
@@ -35,6 +37,11 @@ public class MovieDTO {
 
     public MovieDTO() {}
 
+    public MovieDTO(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,19 +50,19 @@ public class MovieDTO {
         this.name = name;
     }
 
-    public String getDirector() {
+    public DirectorNameId getDirector() {
         return director;
     }
 
-    public void setDirector(String director) {
+    public void setDirector(DirectorNameId director) {
         this.director = director;
     }
 
-    public String getSourceBook() {
+    public BookNameId getSourceBook() {
         return sourceBook;
     }
 
-    public void setSourceBook(String sourceBook) {
+    public void setSourceBook(BookNameId sourceBook) {
         this.sourceBook = sourceBook;
     }
 

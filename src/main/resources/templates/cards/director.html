@@ -19,9 +19,13 @@
         <a th:href="${'/movie/' + movie.getId()}">
             <span>movie:</span>
         </a>
-        <div style="color:#FF0000" th:if="${#fields.hasErrors('movies')}" th:errors="*{movies}" ></div>
         <input th:field="*{movies[__${itemStat.index}__].name}" />
     </div>
+    <div style="color:#FF0000" th:if="${#fields.hasErrors('movies')}" th:errors="*{movies}" ></div>
+    <label for="newMovie">Enter new movie</label>
+    <input type="text" id="newMovie" th:field="*{newMovie.name}" th:value="*{''}"/>
+
+    <hr/>
 
     <input type="submit" value="Update" />
 

@@ -35,10 +35,27 @@ public class DirectorUpdateValidator implements Validator {
         DirectorDTO dir = (DirectorDTO) target;
         Director director = directorService.findById(dir.getId());
         if (director == null) {errors.rejectValue("id", "", "This director doesn't exist");}
-        List<MovieNameId> moviess = dir.getMovies();
-        for (MovieNameId mni : moviess) {
+        List<MovieNameId> movies = dir.getMovies();
+        MovieNameId newMovie = dir.getNewMovie();
+        for (MovieNameId mni : movies) {
             if (mni.getName().isBlank()) {continue;}
-            if (movieService.findByName(mni.getName()) == null) {errors.rejectValue("movie", "", "Entered movie not found");}
+            if (movieService.findByName(mni.getName()) == null) {errors.rejectValue("movies", "", "Entered movie(s) not found");}
+        }
+
+        if (!newMovie.getName().isBlank()) {
+            if (movieService.findByName(newMovie.getName()) == null) {
+                errors.rejectValue("movies", "", "Entered movie(s) not found");
+            }
+        }
+    }
+
+    public void validateByEntity(DirectorDTO target, Director entity, Errors errors) {
+
+        if (target.getId() != entity.getId()) {throw new RuntimeException("target with id: " + target.getId()
+                + " aren't comparable with entity having id: " + entity.getId() + " in this method");}
+
+        if (directorService.findByName(target.getName()) != null && !target.getName().equalsIgnoreCase(entity.getName())) {
+            errors.rejectValue("name", "", "there is already such a director");
         }
     }
 }

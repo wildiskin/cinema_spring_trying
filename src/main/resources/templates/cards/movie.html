@@ -6,12 +6,32 @@
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
-<div th:object="${movie}">
-    <span th:text="${movie.getName()}"></span>
-    <span th:text="${movie.getYear()}"></span>
-    <span th:text="${movie.getDescription()}"></span>
-    <span th:text="${movie.getSourceBook()}"></span>
-</div>
+<form th:object="${movie}" th:action="@{/update/movie}" th:method="POST">
+
+    <div style="color:#FF0000" th:if="${#fields.errors('id')}" th:errors="*{id}"></div>
+    <input type="text" th:field="*{id}" hidden />
+
+    <div style="color:#FF0000" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
+    <input type="text" th:field="*{name}" />
+    <br/>
+
+    <div style="color:#FF0000" th:if="${#fields.errors('year')}" th:errors="*{year}"></div>
+    <input type="text" th:field="*{year}" />
+    <br/>
+    <div style="color:#FF0000" th:if="${#fields.errors('director')}" th:errors="*{director}"></div>
+    <a th:href="${'/director/' + (movie.getDirector() == null ? 'null' : movie.getDirector().getId())}">director: </a>
+    <input type="text" th:field="*{director.name}" />
+    <br/>
+    <div style="color:#FF0000" th:if="${#fields.errors('sourceBook')}" th:errors="*{sourceBook}"></div>
+    <a th:href="${'/book/' + (movie.getSourceBook == null ? 'null' : movie.getSourceBook.getId())}" >original book: </a>
+    <input type="text" th:field="*{sourceBook.name}" />
+    <br/>
+
+    <div style="color:#FF0000" th:if="${#fields.errors('description')}" th:errors="*{description}"></div>
+    <input type="text" th:field="*{description}" />
+    <br/>
+    <input type="submit" value="Update"/>
+</form>
 <hr/>
 <a th:href="${'/delete/movie/' + movie.getId()}">
     <input type="submit" value="Delete" />

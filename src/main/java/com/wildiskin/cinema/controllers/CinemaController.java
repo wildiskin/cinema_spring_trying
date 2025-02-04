@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
@@ -34,16 +35,15 @@ public class CinemaController {
     private final DirectorService directorService;
     private final BookUpdateValidator bookUpdateValidator;
     private final DirectorUpdateValidator directorUpdateValidator;
-    private final MovieValidator movieValidator;
+    private final MovieUpdateValidator movieUpdateValidator;
 
-    @Autowired
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieValidator movieValidator) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
         this.bookUpdateValidator = bookUpdateValidator;
         this.directorUpdateValidator = directorUpdateValidator;
-        this.movieValidator = movieValidator;
+        this.movieUpdateValidator = movieUpdateValidator;
     }
 
     @GetMapping
@@ -56,10 +56,21 @@ public class CinemaController {
         Movie movie = movieService.findById(Long.parseLong(id));
         if (movie == null) {throw new NotFoundException("Movie with this id: " + id + " doesn't exists");}
         MovieDTO m = new MovieDTO(movie.getId(), movie.getName(), movie.getYear(), movie.getDescription());
-        String directorName = movie.getDirector() == null ? "unknown director" : movie.getDirector().getName();
-        String bookName = movie.getSourceBook() == null ? "" : movie.getSourceBook().getName();
-        m.setDirector(directorName);
-        m.setSourceBook(bookName);
+
+        Director director = movie.getDirector();
+        if (director == null) {m.setDirector(null);}
+        else {
+            DirectorNameId dni = new DirectorNameId(director.getId(), director.getName());
+            m.setDirector(dni);
+        }
+
+        Book book = movie.getSourceBook();
+        if (book == null) {m.setSourceBook(null);}
+        else {
+            BookNameId bni = new BookNameId(book.getId(), book.getName());
+            m.setSourceBook(bni);
+        }
+
         model.addAttribute("movie", m);
         return "cards/movie";
     }
@@ -146,27 +157,101 @@ public class CinemaController {
 
     @PostMapping("update/director")
     public String updateDirector(@ModelAttribute("director") @Validated DirectorDTO directorDTO, BindingResult bindingResult) {
+
         directorUpdateValidator.validate(directorDTO, bindingResult);
+
+        Director director = directorService.findById(directorDTO.getId());
+
+        directorUpdateValidator.validateByEntity(directorDTO, director, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "cards/director";
         }
 
-        Director director = directorService.findById(directorDTO.getId());
-        List<MovieNameId> movieList = directorDTO.getMovies();
-        List<Movie> list = new ArrayList<>(movieList.size());
-        for (MovieNameId mni : movieList) {
-
-            Movie movie = movieService.findByName(mni.getName());
-            list.add(movie);
-            movie.setDirector(director);
-            movieService.save(movie);
+        for (String s : directorDTO.getMovies().stream().map((z) -> z.getName()).collect(Collectors.toList())) {
+            System.out.println(s);
         }
+
+
+
+        List<MovieNameId> list = directorDTO.getMovies();
+        list.add(directorDTO.getNewMovie());
+
+        for (Movie m: director.getMovies()) {
+            m.setDirector(null);
+        }
+
+        director.setMovies(null);
+
+        List<Movie> itog = new ArrayList<>(list.size());
+        for (MovieNameId mni : list) {
+            if (!mni.getName().isBlank()) {
+                Movie movie = movieService.findByName(mni.getName());
+                itog.add(movie);
+                movie.setDirector(director);
+                movieService.save(movie);
+            }
+        }
+
+
         director.setName(directorDTO.getName());
-        director.setMovies(list);
+        director.setMovies(itog);
         directorService.save(director);
 
         return "redirect:/all/directors";
+    }
+
+    @PostMapping("update/movie")
+    public String updateMovie(@ModelAttribute("movie") @Validated MovieDTO movieDTO, BindingResult bindingResult) {
+
+        movieUpdateValidator.validate(movieDTO, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "cards/movie";
+        }
+
+        Movie movie = movieService.findById(movieDTO.getId());
+
+        DirectorNameId dni = movieDTO.getDirector();
+        if (dni != null) {
+            Director newDirector = directorService.findByName(dni.getName());
+            Director pastDirector = directorService.findById(dni.getId());
+
+            if (pastDirector != null) {
+                pastDirector.getMovies().remove(movie);
+                directorService.save(pastDirector);
+            }
+            if (dni.getName().isBlank()) {  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                movie.setDirector(null);
+            }
+            else {
+                newDirector.getMovies().add(movie);
+                movie.setDirector(newDirector);
+                directorService.save(newDirector);
+            }
+        }
+
+        BookNameId bni = movieDTO.getSourceBook();
+        if (bni != null) {
+            if (bni.getName().isBlank()) {movie.setSourceBook(null);} //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            else {
+                Book pastBook = bookService.findById(bni.getId());
+                if (pastBook != null) {
+                    pastBook.setMovieChildId(null);
+                    bookService.save(pastBook);
+                }
+
+                Book newBook = bookService.findByName(bni.getName());
+
+                newBook.setMovieChildId(movie);
+                movie.setSourceBook(newBook);
+                bookService.save(newBook);
+            }
+        }
+
+        movieService.save(movie);
+
+        return "redirect:/all/movies";
     }
 
     @ExceptionHandler

@@ -7,6 +7,8 @@ import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.repositories.BookRepository;
 import com.wildiskin.cinema.repositories.DirectorRepository;
 import com.wildiskin.cinema.repositories.MovieRepository;
+import com.wildiskin.cinema.util.BookNameId;
+import com.wildiskin.cinema.util.DirectorNameId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -38,11 +40,13 @@ public class MovieService {
         List<Movie> list = movieRepository.findAll();
         List<MovieDTO> listDto = new ArrayList<>(list.size());
         for (Movie m : list) {
-            MovieDTO movieDTO = new MovieDTO(m.getId(), m.getName(), m.getYear(), m.getDescription());
-            String directorName = m.getDirector() == null ? "unknown director" : m.getDirector().getName();
-            String bookName = m.getSourceBook() == null ? "" : m.getSourceBook().getName();
-            movieDTO.setDirector(directorName);
-            movieDTO.setSourceBook(bookName);
+            MovieDTO movieDTO = new MovieDTO(m.getId(), m.getName());
+
+//            String directorName = m.getDirector().getName() == null ? "unknown director" : m.getDirector().getName();
+//
+//            String bookName = m.getSourceBook().getName() == null ? "" : m.getSourceBook().getName();
+//            movieDTO.setDirector(new DirectorNameId(directorName));
+//            movieDTO.setSourceBook(new BookNameId(bookName));
             listDto.add(movieDTO);
         }
 
@@ -62,11 +66,11 @@ public class MovieService {
     public void save(MovieDTO movieDTO) {
         Movie movie = new Movie(movieDTO.getName(), movieDTO.getYear(), movieDTO.getDescription());
 
-        if (movieDTO.getDirector() != null && !movieDTO.getDirector().isBlank()) {  //director handling
+        if (movieDTO.getDirector().getName() != null && !movieDTO.getDirector().getName().isBlank()) {  //director handling
 
             boolean alsoExist;
             Director director;
-            String directorName = movieDTO.getDirector();
+            String directorName = movieDTO.getDirector().getName();
             if (directorService.findByName(directorName) == null) {
                 director = new Director(directorName);
                 alsoExist = false;
@@ -82,10 +86,10 @@ public class MovieService {
                     directorService.save(director);
         }
 
-        if (movieDTO.getSourceBook() != null && !movieDTO.getSourceBook().isBlank()) {  //book handle
+        if (movieDTO.getSourceBook().getName() != null && !movieDTO.getSourceBook().getName().isBlank()) {  //book handle
             boolean alsoExist;
             Book book;
-            String bookName = movieDTO.getSourceBook();
+            String bookName = movieDTO.getSourceBook().getName();
             if (bookService.findByName(bookName) == null) {
                 alsoExist = false;
                 book = new Book(bookName);
@@ -108,10 +112,7 @@ public class MovieService {
         return movieRepository.save(movie);
     }
 
-    @Transactional
-    public void update() {
 
-    }
 
     @Transactional
     public void delete(long id) {
@@ -121,12 +122,20 @@ public class MovieService {
     public List<MovieDTO> findAllMoviesByDirectorName(String directorName) {
         List<Movie> list = movieRepository.findAllMoviesByDirectorName(directorName);
         List<MovieDTO> listDto = new ArrayList<>(list.size());
-        for (Movie m : list) {
-            MovieDTO movie = new MovieDTO(m.getId(), m.getName(), m.getYear(), m.getDescription());
-            movie.setDirector(m.getDirector().getName());
-            Book book = m.getSourceBook();
-            if (book != null) {movie.setSourceBook(book.getName());}
-            listDto.add(movie);
+        for (Movie movie : list) {
+            MovieDTO mdto = new MovieDTO(movie.getId(), movie.getName(), movie.getYear(), movie.getDescription());
+
+            Director director = movie.getDirector();
+            DirectorNameId dni = new DirectorNameId(director.getId(), director.getName());
+            mdto.setDirector(dni);
+
+            Book book = movie.getSourceBook();
+            if (book != null) {
+                BookNameId bni = new BookNameId(book.getId(), book.getName());
+                mdto.setSourceBook(bni);
+            }
+
+            listDto.add(mdto);
         }
         return listDto;
     }

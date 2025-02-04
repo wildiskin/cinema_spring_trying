@@ -1,6 +1,7 @@
 package com.wildiskin.cinema.util;
 
 import com.wildiskin.cinema.DTO.DirectorDTO;
+import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.repositories.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,8 @@ public class DirectorValidator implements Validator {
     public void validate(Object target, Errors errors) {
         DirectorDTO director = (DirectorDTO) target;
         if (directorRepository.findByName(director.getName()) != null) {
-            errors.rejectValue("name", "", "Такой режиссер уже есть");
+            errors.rejectValue("name", "", "there is already such a director");
         }
     }
+
 }

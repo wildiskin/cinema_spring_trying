@@ -12,6 +12,8 @@ public class DirectorDTO {
 
     private long id;
 
+    private MovieNameId newMovie;
+
     @Length(min = 2, max = 50, message = "Director's name should be between 2 and 50 characters")
     @NotNull
     private String name;
@@ -66,6 +68,14 @@ public class DirectorDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public MovieNameId getNewMovie() {
+        return newMovie;
+    }
+
+    public void setNewMovie(MovieNameId newMovie) {
+        this.newMovie = newMovie;
     }
 }
 

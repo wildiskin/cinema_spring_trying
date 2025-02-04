@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/all")
+//@RequestMapping("/all")
 public class ShowAllController {
 
     private final MovieService movieService;
@@ -33,21 +33,21 @@ public class ShowAllController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/movies")
+    @GetMapping(value = {"/all/movies"})
     public String showMovies(Model model) {
         model.addAttribute("movies", movieService.findAllDto());
 
         return "all/movies";
     }
 
-    @GetMapping("/directors")
+    @GetMapping("/all/directors")
     public String showDirectors(Model model) {
         model.addAttribute("directors", directorService.findAllDto());
 
         return "all/directors";
     }
 
-    @GetMapping("/books")
+    @GetMapping(value = {"/all/books", "/book/null"})
     public String showBooks(Model model) {
         model.addAttribute("books", bookService.findAllDto());
 
