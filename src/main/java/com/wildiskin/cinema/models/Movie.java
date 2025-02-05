@@ -23,7 +23,7 @@ public class Movie {
     private Director director;
 
     @Column(name="year")
-    private int year;
+    private Integer year;
 
     @Column(name = "description")
     private String description;
@@ -76,11 +76,11 @@ public class Movie {
         this.director = director;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 

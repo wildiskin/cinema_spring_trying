@@ -9,12 +9,16 @@ import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.services.BookService;
 import com.wildiskin.cinema.services.DirectorService;
+import com.wildiskin.cinema.services.MailService;
 import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.util.*;
+import jakarta.mail.MessagingException;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,14 +40,16 @@ public class CinemaController {
     private final BookUpdateValidator bookUpdateValidator;
     private final DirectorUpdateValidator directorUpdateValidator;
     private final MovieUpdateValidator movieUpdateValidator;
+    private final MailService mailService;
 
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator, MailService mailService) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
         this.bookUpdateValidator = bookUpdateValidator;
         this.directorUpdateValidator = directorUpdateValidator;
         this.movieUpdateValidator = movieUpdateValidator;
+        this.mailService = mailService;
     }
 
     @GetMapping
@@ -54,8 +60,9 @@ public class CinemaController {
     @GetMapping("movie/{id}")
     public String movieCard(@PathVariable("id") String id, Model model) {
         Movie movie = movieService.findById(Long.parseLong(id));
+        String year = movie.getYear() == null ? "" : movie.getYear().toString();
         if (movie == null) {throw new NotFoundException("Movie with this id: " + id + " doesn't exists");}
-        MovieDTO m = new MovieDTO(movie.getId(), movie.getName(), movie.getYear(), movie.getDescription());
+        MovieDTO m = new MovieDTO(movie.getId(), movie.getName(), year, movie.getDescription());
 
         Director director = movie.getDirector();
         if (director == null) {m.setDirector(null);}
@@ -212,6 +219,13 @@ public class CinemaController {
 
         Movie movie = movieService.findById(movieDTO.getId());
 
+        movie.setName(movieDTO.getName());
+
+        if ( movieDTO.getYear().isBlank() ) { movie.setYear(null); }
+        else { movie.setYear( Integer.parseInt( movieDTO.getYear() ) ); }
+
+        movie.setDescription(movieDTO.getDescription());
+
         DirectorNameId dni = movieDTO.getDirector();
         if (dni != null) {
             Director newDirector = directorService.findByName(dni.getName());
@@ -221,7 +235,7 @@ public class CinemaController {
                 pastDirector.getMovies().remove(movie);
                 directorService.save(pastDirector);
             }
-            if (dni.getName().isBlank()) {  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (dni.getName().isBlank()) {
                 movie.setDirector(null);
             }
             else {
@@ -233,7 +247,7 @@ public class CinemaController {
 
         BookNameId bni = movieDTO.getSourceBook();
         if (bni != null) {
-            if (bni.getName().isBlank()) {movie.setSourceBook(null);} //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            if (bni.getName().isBlank()) {movie.setSourceBook(null);}
             else {
                 Book pastBook = bookService.findById(bni.getId());
                 if (pastBook != null) {
@@ -262,5 +276,16 @@ public class CinemaController {
     @ExceptionHandler
     public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
         return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
+    }
+
+    @GetMapping("test/email")
+    public String dropPage() {
+        return "testEmailThings";
+    }
+
+    @PostMapping("test/email")
+    public HttpEntity<HttpStatus> verification(@RequestBody String email) throws MessagingException {
+        mailService.sendMessage(email, "first message");
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

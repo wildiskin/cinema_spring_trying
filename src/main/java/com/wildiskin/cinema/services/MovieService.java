@@ -64,7 +64,8 @@ public class MovieService {
 
     @Transactional
     public void save(MovieDTO movieDTO) {
-        Movie movie = new Movie(movieDTO.getName(), movieDTO.getYear(), movieDTO.getDescription());
+        Integer year = movieDTO.getYear().isBlank() ? null : Integer.parseInt(movieDTO.getYear());
+        Movie movie = new Movie(movieDTO.getName(), year, movieDTO.getDescription());
 
         if (movieDTO.getDirector().getName() != null && !movieDTO.getDirector().getName().isBlank()) {  //director handling
 
@@ -123,7 +124,7 @@ public class MovieService {
         List<Movie> list = movieRepository.findAllMoviesByDirectorName(directorName);
         List<MovieDTO> listDto = new ArrayList<>(list.size());
         for (Movie movie : list) {
-            MovieDTO mdto = new MovieDTO(movie.getId(), movie.getName(), movie.getYear(), movie.getDescription());
+            MovieDTO mdto = new MovieDTO(movie.getId(), movie.getName(), ( (Integer) movie.getYear() ).toString(), movie.getDescription());
 
             Director director = movie.getDirector();
             DirectorNameId dni = new DirectorNameId(director.getId(), director.getName());

@@ -19,16 +19,12 @@ public class MovieDTO {
     private DirectorNameId director;
     private BookNameId sourceBook;
 
-    @NotNull
-    @Digits(integer = 4, fraction = 0, message = "Укажите реальный год")
-    @Min(value = 1895L, message = "Фильмов еще не существовало")
-    @Max(value = 2025L, message = "Фильм должен быть вышедшим") //TODO my own annotation for comparing with current date
-    private int year;
+    private String year;
 
     @Length(max = 500, message = "Описание не должно занимать более 150 символов")
     private String description;
 
-    public MovieDTO(long id, String name, int year, String description) {
+    public MovieDTO(long id, String name, String year, String description) {
         this.id = id;
         this.name = name;
         this.year = year;
@@ -66,11 +62,11 @@ public class MovieDTO {
         this.sourceBook = sourceBook;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 

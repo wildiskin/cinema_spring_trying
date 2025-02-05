@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,6 +23,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Properties;
+
 @Configuration
 @EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -29,6 +34,16 @@ public class SecurityConfiguration { //implements WebMvcConfigurer
 
 //    @Value("${app.storage.path}")
 //    private String appPath;
+    @Value("${mail.sender.address}")
+    private String username;
+
+    @Value("${mail.sender.password}")
+    private String password;
+
+    @Value("${smtp.google.domain}")
+    private String domain;
+
+    private int port = 25;
 
     @Autowired
     public SecurityConfiguration(UserService userService) {
@@ -85,5 +100,16 @@ public class SecurityConfiguration { //implements WebMvcConfigurer
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2A);
+    }
+
+    @Bean
+    public JavaMailSender getMailSender() {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setPort(port);
+        sender.setPassword(password);
+        sender.setUsername(username);
+        sender.setHost(domain);
+        Properties properties = sender.getJavaMailProperties();
+        return sender;
     }
 }
