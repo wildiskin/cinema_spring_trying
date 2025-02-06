@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -279,13 +280,15 @@ public class CinemaController {
     }
 
     @GetMapping("test/email")
-    public String dropPage() {
+    public String dropPage(Model model) {
+        final EmailPlug email = new EmailPlug();
+        model.addAttribute("email", email);
         return "testEmailThings";
     }
 
     @PostMapping("test/email")
-    public HttpEntity<HttpStatus> verification(@RequestBody String email) throws MessagingException {
-        mailService.sendMessage(email, "first message");
+    public HttpEntity<HttpStatus> verification(@ModelAttribute("email") EmailPlug email) {
+        mailService.sendMessage(email.getText(), "first message");
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

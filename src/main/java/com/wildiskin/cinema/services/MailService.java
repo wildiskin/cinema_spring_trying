@@ -1,29 +1,34 @@
 package com.wildiskin.cinema.services;
 
-import jakarta.mail.Address;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.io.UnsupportedEncodingException;
+
+@Component
 public class MailService {
 
-    private final JavaMailSender sender;
-
     @Autowired
-    public MailService(JavaMailSender sender) {
-        this.sender = sender;
-    }
+    private JavaMailSender sender;
 
-    public void sendMessage(String recipient, String msg) throws MessagingException {
-        MimeMessage mimeMessage = sender.createMimeMessage();
-        Address address = new InternetAddress(recipient);
-        mimeMessage.addRecipient(MimeMessage.RecipientType.TO, address);
-        mimeMessage.setText(msg, "utf-8");
-        sender.send(mimeMessage);
+    @Value("${spring.mail.username}")
+    private String senderAddress;
+
+//    @Value("${mail.sender.password}")
+//    private String senderPwd;
+
+
+    public void sendMessage(String recipient, String text) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom(senderAddress);
+        msg.setTo(recipient);
+        msg.setSubject("testing!");
+        msg.setText(text);
+        sender.send(msg);
     }
 }

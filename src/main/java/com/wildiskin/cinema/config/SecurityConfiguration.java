@@ -3,25 +3,18 @@ package com.wildiskin.cinema.config;
 import com.wildiskin.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Properties;
 
@@ -34,16 +27,18 @@ public class SecurityConfiguration { //implements WebMvcConfigurer
 
 //    @Value("${app.storage.path}")
 //    private String appPath;
-    @Value("${mail.sender.address}")
+
+    @Value("${spring.mail.username}")
     private String username;
 
-    @Value("${mail.sender.password}")
+    @Value("${spring.mail.password}")
     private String password;
 
-    @Value("${smtp.google.domain}")
-    private String domain;
+    @Value("${spring.mail.host}")
+    private String host;
 
-    private int port = 25;
+    @Value("${spring.mail.port}")
+    private int port;
 
     @Autowired
     public SecurityConfiguration(UserService userService) {
@@ -103,13 +98,18 @@ public class SecurityConfiguration { //implements WebMvcConfigurer
     }
 
     @Bean
-    public JavaMailSender getMailSender() {
+    public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setPort(port);
         sender.setPassword(password);
         sender.setUsername(username);
-        sender.setHost(domain);
+        sender.setHost(host);
         Properties properties = sender.getJavaMailProperties();
+        properties.put("mail.transport.protocol", "smtp");
+//        properties.put("mail.smtp.ssl.enable", true);
+        properties.put("mail.smtp.starttls.enable", true);
+        properties.put("mail.smtp.auth", true);
+        properties.put("mail.debug", true);
         return sender;
     }
 }

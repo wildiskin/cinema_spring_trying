@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
-<form th:action="@{/test/email}" method="post">
-  <input th:text="*{'Enter your email here'}" />
+<form th:action="@{/test/email}" method="post" th:object="${email}">
+  <input type="email" th:field="*{text}" />
   <input type="submit" />
 </form>
 </body>
