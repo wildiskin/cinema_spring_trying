@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 
-@Component
+@Service
 public class MailService {
 
     @Autowired
@@ -27,7 +27,7 @@ public class MailService {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(senderAddress);
         msg.setTo(recipient);
-        msg.setSubject("testing!");
+        msg.setSubject("test");
         msg.setText(text);
         sender.send(msg);
     }

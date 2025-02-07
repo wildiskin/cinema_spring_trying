@@ -1,12 +1,13 @@
 package com.wildiskin.cinema.DTO;
 
 import com.wildiskin.cinema.util.Roles;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 public class UserDTO {
 
-    public long id;
+    private long id;
 
     @NotNull(message = "username is required")
     @Length(min = 2, max = 50)
@@ -15,6 +16,11 @@ public class UserDTO {
     @NotNull(message = "password is required")
     @Length(min = 8, max = 50)
     private String password;
+
+    @NotNull
+    @Email
+    private String email;
+
 
     private String role;
 
@@ -47,6 +53,13 @@ public class UserDTO {
         this.role = role;
     }
 
+    public UserDTO(String name, String password, String email, String role) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
     public String getName() {
         return name;
     }
@@ -69,5 +82,13 @@ public class UserDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public @NotNull @Email String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@NotNull @Email String email) {
+        this.email = email;
     }
 }

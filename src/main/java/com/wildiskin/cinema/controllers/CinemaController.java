@@ -287,8 +287,8 @@ public class CinemaController {
     }
 
     @PostMapping("test/email")
-    public HttpEntity<HttpStatus> verification(@ModelAttribute("email") EmailPlug email) {
-        mailService.sendMessage(email.getText(), "first message");
-        return ResponseEntity.ok(HttpStatus.OK);
+    public String verification(@ModelAttribute("email") EmailPlug email) {
+        mailService.sendMessage(email.getText(), "");
+        return "redirect:/";
     }
 }

@@ -37,6 +37,14 @@ public class UserService implements UserDetailsService {
         return new UserDetailsImpl(user);
     }
 
+    public UserDTO findByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("There is not user with this username in app");
+        }
+        return new UserDTO(user.getId(), user.getName(), user.getPassword(), user.getRole());
+    }
+
     public UserDTO findById(int id) {
         Optional<User> superPosUser = userRepository.findById(id);
         if (!superPosUser.isPresent()) {

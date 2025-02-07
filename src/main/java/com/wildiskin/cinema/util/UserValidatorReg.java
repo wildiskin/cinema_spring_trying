@@ -25,8 +25,8 @@ public class UserValidatorReg implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         UserDTO userDTO = (UserDTO) target;
-        if (userRepository.findByName(userDTO.getName()) != null) {
-            errors.rejectValue("name", "", "this username is already taken by another user");
+        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
+            errors.rejectValue("email", "", "account with this email also exist");
         }
     }
 }
