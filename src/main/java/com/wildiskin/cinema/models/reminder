@@ -25,3 +25,5 @@ CREATE TABLE users (
         CHECK ( email ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' ),
     role VARCHAR(50)
 )
+$2a$10$X47enGwoX3e7b6yL/4kCX.UlZltj99daFp5etu7.1zYELrI7/ndQq
+$2a$10$Dg4Ln.h70BjkmWG07SAyh.DCZy6PeqyYK94qf6MdKucs7Ak8MlTAS

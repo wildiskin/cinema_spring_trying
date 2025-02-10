@@ -19,7 +19,8 @@ public class UserDTO {
 
     @NotNull
     @Email
-    private String email;
+    private String username;
+
 
 
     private String role;
@@ -35,30 +36,14 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
-
-    public UserDTO(String name, String password, String role) {
-        this.name = name;
-        this.password = password;
-        this.role = role;
-    }
-
-    public UserDTO(long id, String name, String password, String role) {
+    public UserDTO(long id,  String username, String name, String password, String role) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.role = role;
+        this.username = username;
     }
 
-    public UserDTO(String name, String password, String email, String role) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-    }
 
     public String getName() {
         return name;
@@ -84,11 +69,11 @@ public class UserDTO {
         this.id = id;
     }
 
-    public @NotNull @Email String getEmail() {
-        return email;
+    public @NotNull @Email String getUsername() {
+        return username;
     }
 
-    public void setEmail(@NotNull @Email String email) {
-        this.email = email;
+    public void setUsername(@NotNull @Email String username) {
+        this.username = username;
     }
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +34,12 @@ public class Movie {
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book sourceBook;
 
+    @ManyToMany
+    @JoinTable(name = "basket",
+            joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> basket = new HashSet<>();
+
     public Movie() {}
 
     public Movie(String name, int year, String description) {
@@ -40,16 +48,12 @@ public class Movie {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", director=" + director +
-                ", year=" + year +
-                ", description='" + description + '\'' +
-                ", SourceBook=" + sourceBook +
-                '}';
+    public Set<User> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Set<User> basket) {
+        this.basket = basket;
     }
 
     public long getId() {

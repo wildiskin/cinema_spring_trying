@@ -24,7 +24,7 @@ public class RegisterService {
 
     public void save(UserDTO userDTO) {
         String password = passwordEncoder.encode(userDTO.getPassword());
-        User user = new User(userDTO.getName(), password, userDTO.getEmail());
+        User user = new User(userDTO.getName(), password, userDTO.getUsername());
 
         user.setRole(userDTO.getRole());
 

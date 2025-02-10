@@ -3,6 +3,9 @@ package com.wildiskin.cinema.models;
 import com.wildiskin.cinema.util.Roles;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -24,12 +27,18 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    public User() {
-    }
+    @ManyToMany
+    @JoinTable(name = "basket",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"))
+    private Set<Movie> basket = new HashSet<>();
+
+    public User() {}
 
     public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
+        this.email = email;
     }
 
     public String getRole() {
@@ -38,9 +47,10 @@ public class User {
 
     public void setRole(String role) {
 
-        String rol = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+        role = role.toUpperCase();
+        role = role.startsWith("ROLE_") ? role : "ROLE_" + role;
         for (Roles r : Roles.values()) {
-            if (r.name().equalsIgnoreCase(rol)) {
+            if (r.name().equalsIgnoreCase(role)) {
                 this.role = r.name();
                 return;
             }
@@ -71,5 +81,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -5,15 +5,17 @@
   <link rel="stylesheet" th:href="@{/css/styles.css}" type="text/css">
 </head>
 <body>
-<div th:if="${param.error}">
-  Invalid username and password.
+<div style="color:darkred" th:if="${param.error}">
+  Invalid username or password.
 </div>
 <div th:if="${param.logout}">
   You have been logged out.
 </div>
-<form th:action="@{/process_login}" method="post">
-  <div><label> User Name : <input type="text" name="username" th:value="admin"/> </label></div>
-  <div><label> Password: <input type="password" name="password" th:value="12345678"/> </label></div>
+<form th:action="@{/auth/processLogin}" method="post" th:object="${user}">
+  <label> Email : <input type="email" name="username" th:value="'wildiskin@gmail.com'"/> </label>
+  <br/>
+  <label> Password: <input type="password" name="password" th:value="12345678"/> </label>
+  <br/>
   <div><input type="submit" value="Sign In"/></div>
 </form>
 <a href="/auth/registration">registration</a>

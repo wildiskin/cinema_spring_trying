@@ -50,6 +50,24 @@ public class AuthController {
         return "auth/login";
     }
 
+//    @PostMapping("/processLogin")
+//    public String loginPost(@ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
+//        System.out.println("i workin biiiitchju");
+//        System.out.println("i workin biiiitchju");
+//        System.out.println("i workin biiiitchju");
+//        System.out.println("i workin biiiitchju");
+//        userValidatorLog.validate(userDTO, bindingResult);
+//
+//        if (bindingResult.hasErrors()) {
+//            return "auth/login";
+//        }
+//
+//        return "redirect:/";
+//    }
+
+
+
+
 //    @PostMapping("/login")
 //    public String login(@ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
 //        userValidatorLog.validate(userDTO, bindingResult);

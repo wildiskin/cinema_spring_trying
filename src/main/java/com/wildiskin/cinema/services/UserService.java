@@ -26,9 +26,9 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByName(username);
+        User user = userRepository.findByEmail(email);
 
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UserNotFoundException("There is not user with this username in app");
         }
-        return new UserDTO(user.getId(), user.getName(), user.getPassword(), user.getRole());
+        return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole());
     }
 
     public UserDTO findById(int id) {
@@ -51,7 +51,7 @@ public class UserService implements UserDetailsService {
             throw new UserNotFoundException("There is not user with this username in app");
         }
         User user = superPosUser.get();
-        return new UserDTO(user.getId(), user.getName(), user.getPassword(), user.getRole());
+        return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole());
     }
 
     public void deleteById(long id) {
@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService {
         List<User> users = userRepository.findAll();
         List<UserDTO> usersDTO = new ArrayList<>(users.size());
         for (User u : users) {
-            usersDTO.add(new UserDTO(u.getName(), u.getPassword(), u.getRole()));
+            usersDTO.add(new UserDTO(u.getId(), u.getEmail(), u.getName(), u.getPassword(), u.getRole()));
         }
         return usersDTO;
     }
