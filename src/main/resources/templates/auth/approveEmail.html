@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>approve</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" type="text/css">
+</head>
+<body>
+<form th:action="@{/auth/approve}" method="post" >
+    <label>Enter code from your mailbox: <br/><input type="text" th:value="*{inputCode}" name="inputCode"></label>
+    <br/>
+    <input type="submit" value="send" />
+</form>
+</body>
+</html>

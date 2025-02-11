@@ -29,14 +29,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
 
         String userName = auth.getName();
-        System.out.println(userName);
-        String password = passwordEncoder.encode(auth.getCredentials().toString());
-        System.out.println(password);
+        String password =auth.getCredentials().toString();
 
         UserDTO userDTO = userService.findByEmail(userName);
 
         if (userDTO == null) {throw new BadCredentialsException("User with username: \"" + userName + "\" not found");}
-//        if (!password.equals(userDTO.getPassword())) {throw new BadCredentialsException("Wrong password");}
+        if (!passwordEncoder.matches(password, userDTO.getPassword())) {throw new BadCredentialsException("Wrong password");}
 
         User user = new User(userDTO.getName(), userDTO.getPassword(), userDTO.getUsername());
         user.setRole(userDTO.getRole());
