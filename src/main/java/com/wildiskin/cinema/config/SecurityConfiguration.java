@@ -51,7 +51,7 @@ public class SecurityConfiguration { //implements WebMvcConfigurer
                 .authorizeHttpRequests(
                         (auth) -> auth
                                 .requestMatchers("/api/showAllMovies", "api/addUser", "api/{id}", "/api/showAllUsers", "/api/updateUser", "/api/deleteUser/", "/api/showAllDirectorsFilmsBy/", "/api/showAllDirectorsFilmsByDirector").hasAnyAuthority("ROLE_ADMIN", "ROLE_MODERATOR")
-                                .requestMatchers("/auth/*", "/css/styles.css").permitAll()
+                                .requestMatchers("/auth/**", "/css/styles.css").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

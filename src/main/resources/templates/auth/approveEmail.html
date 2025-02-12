@@ -6,8 +6,8 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}" type="text/css">
 </head>
 <body>
-<form th:action="@{/auth/approve}" method="post" >
-    <label>Enter code from your mailbox: <br/><input type="text" th:value="*{inputCode}" name="inputCode"></label>
+<form th:action="@{/auth/approve}" method="post" th:object="${inputCode}">
+    <label>Enter code from your mailbox: <br/><input type="text" th:field="*{string}" name="inputCode"></label>
     <br/>
     <input type="submit" value="send" />
 </form>

@@ -3,6 +3,9 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.services.MailService;
 import com.wildiskin.cinema.services.RegisterService;
+import com.wildiskin.cinema.services.UserService;
+import com.wildiskin.cinema.util.CodeGenerator;
+import com.wildiskin.cinema.util.StringWrapper;
 import com.wildiskin.cinema.util.UserValidatorLog;
 import com.wildiskin.cinema.util.UserValidatorReg;
 import jakarta.validation.Valid;
@@ -16,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/auth")
@@ -24,13 +30,16 @@ public class AuthController {
     private final RegisterService registerService;
     private final UserValidatorReg userValidatorReg;
     private final MailService mailService;
-    private final RedirectAttributes ra = new RedirectAttributesModelMap();
+    private final RedirectAttributes ra;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(RegisterService registerService, UserValidatorReg userValidatorReg, MailService mailService) {
+    public AuthController(RegisterService registerService, UserValidatorReg userValidatorReg, MailService mailService, RedirectAttributes ra, UserService userService) {
         this.registerService = registerService;
         this.userValidatorReg = userValidatorReg;
         this.mailService = mailService;
+        this.ra = ra;
+        this.userService = userService;
     }
 
     @GetMapping("/registration")
@@ -38,47 +47,73 @@ public class AuthController {
         return "auth/registration";
     }
 
-    @PostMapping("/email")
-    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
-        mailService.sendMessage(userDTO.getUsername(), "7777");
+    @PostMapping("/registration")
+    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute("inputCode", "1234");
-        redirectAttributes.addFlashAttribute("user", userDTO);
-        redirectAttributes.addFlashAttribute("code", 7777);
+        userValidatorReg.validate(userDTO, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "/auth/registration";
+        }
+
+        String secretCode = CodeGenerator.generate();
+        StringWrapper inputCode = new StringWrapper("string");
+        UserDTO user = new UserDTO(userDTO.getId(), userDTO.getUsername(), userDTO.getName(), userDTO.getPassword(), userDTO.getRole());
+        mailService.sendMessage(userDTO.getUsername(), secretCode);
+
+        redirectAttributes.addFlashAttribute("inputCode", inputCode);
+        redirectAttributes.addFlashAttribute("user", user);
+        redirectAttributes.addFlashAttribute("secretCode", secretCode);
 
         return "redirect:/auth/approve";
     }
 
     @GetMapping("/approve")
-    public String approveGet(@ModelAttribute("inputCode") String inputCode, RedirectAttributes redirectAttributes, ModelMap modelMap) {
-        redirectAttributes.addFlashAttribute("user", modelMap.getAttribute("user"));
+    public String approveGet(@ModelAttribute("inputCode") StringWrapper inputCode, RedirectAttributes redirectAttributes) {
+
+        Map<String, ?> attrs = redirectAttributes.getFlashAttributes();
+        UserDTO user = (UserDTO) attrs.get("user");
+        String secretCode = (String) attrs.get("secretCode");
+
+
+        redirectAttributes.addFlashAttribute("user", user);
+        redirectAttributes.addFlashAttribute("secretCode", secretCode);
+        System.out.println(user.getPassword());
+        System.out.println(user.getUsername());
+        System.out.println(user.getName());
+        System.out.println(inputCode.getString());
+        System.out.println(secretCode);
         return "auth/approveEmail";
     }
 
     @PostMapping("/approve")
-    public String approve(@RequestParam String inputCode, BindingResult bindingResult, UserDTO userDTO, String code, RedirectAttributes redirectAttributes) {
+    public String approve(@ModelAttribute("inputCode") StringWrapper inputCode, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        if (inputCode == code) {
-            redirectAttributes.addFlashAttribute("user", userDTO);
-            return "redirect:/auth/registration";
+        Map<String, ?> attrs = redirectAttributes.getFlashAttributes();
+        String secret = (String) attrs.get("secretCode");
+
+        if (secret.equals(inputCode.getString())) {
+            UserDTO user = (UserDTO) attrs.get("user");
+            registerService.save(user);
+            return "redirect:/login";
         }
 
-        bindingResult.rejectValue("inputCode", "", "wrong code,try again");
+        bindingResult.rejectValue("inputCode", "", "wrong code, try again");
 
         return "auth/approveEmail";
     }
 
-    @PostMapping("/registration")
-    public String registration(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult) {
-        userValidatorReg.validate(userDTO, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            return "auth/registration";
-        }
-        registerService.save(userDTO);
-
-        return "redirect:/";
-    }
+//    @PostMapping("/registration")
+//    public String registration(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult) {
+//        userValidatorReg.validate(userDTO, bindingResult);
+//
+//        if (bindingResult.hasErrors()) {
+//            return "auth/registration";
+//        }
+//        registerService.save(userDTO);
+//
+//        return "redirect:/";
+//    }
 
     @GetMapping("/login")
     public String login(@ModelAttribute("user") UserDTO userDTO) {
