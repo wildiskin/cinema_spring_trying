@@ -7,7 +7,8 @@
 </head>
 <body>
 <form th:action="@{/auth/approve}" method="post" th:object="${inputCode}">
-    <label>Enter code from your mailbox: <br/><input type="text" th:field="*{string}" name="inputCode"></label>
+    <div style='color:darkred' th:if="*{#fields.hasErrors('value')}" th:errors="*{value}"></div>
+    <label>Enter code from your mailbox: <br/><input type="text" th:field="*{value}" name="inputCode"></label>
     <br/>
     <input type="submit" value="send" />
 </form>

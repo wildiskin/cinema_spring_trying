@@ -47,12 +47,14 @@ public class User {
 
     public void setRole(String role) {
 
-        role = role.toUpperCase();
-        role = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-        for (Roles r : Roles.values()) {
-            if (r.name().equalsIgnoreCase(role)) {
-                this.role = r.name();
-                return;
+        if (role != null) {
+            role = role.toUpperCase();
+            role = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+            for (Roles r : Roles.values()) {
+                if (r.name().equalsIgnoreCase(role)) {
+                    this.role = r.name();
+                    return;
+                }
             }
         }
         this.role = "ROLE_USER";

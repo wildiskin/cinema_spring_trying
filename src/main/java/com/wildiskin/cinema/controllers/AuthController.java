@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
@@ -25,21 +26,23 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/auth")
+@SessionAttributes({"user", "secretCode"})
 public class AuthController {
 
     private final RegisterService registerService;
     private final UserValidatorReg userValidatorReg;
     private final MailService mailService;
-    private final RedirectAttributes ra;
-    private final UserService userService;
 
     @Autowired
-    public AuthController(RegisterService registerService, UserValidatorReg userValidatorReg, MailService mailService, RedirectAttributes ra, UserService userService) {
+    public AuthController(RegisterService registerService, UserValidatorReg userValidatorReg, MailService mailService) {
         this.registerService = registerService;
         this.userValidatorReg = userValidatorReg;
         this.mailService = mailService;
-        this.ra = ra;
-        this.userService = userService;
+    }
+
+    @ModelAttribute("user")
+    public UserDTO createUser() {
+        return new UserDTO();
     }
 
     @GetMapping("/registration")
@@ -48,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
 
         userValidatorReg.validate(userDTO, bindingResult);
 
@@ -57,50 +60,39 @@ public class AuthController {
         }
 
         String secretCode = CodeGenerator.generate();
-        StringWrapper inputCode = new StringWrapper("string");
-        UserDTO user = new UserDTO(userDTO.getId(), userDTO.getUsername(), userDTO.getName(), userDTO.getPassword(), userDTO.getRole());
         mailService.sendMessage(userDTO.getUsername(), secretCode);
 
-        redirectAttributes.addFlashAttribute("inputCode", inputCode);
-        redirectAttributes.addFlashAttribute("user", user);
-        redirectAttributes.addFlashAttribute("secretCode", secretCode);
+        model.addAttribute("secretCode", secretCode);
+        model.addAttribute("user", userDTO);
 
         return "redirect:/auth/approve";
     }
 
     @GetMapping("/approve")
-    public String approveGet(@ModelAttribute("inputCode") StringWrapper inputCode, RedirectAttributes redirectAttributes) {
-
-        Map<String, ?> attrs = redirectAttributes.getFlashAttributes();
-        UserDTO user = (UserDTO) attrs.get("user");
-        String secretCode = (String) attrs.get("secretCode");
-
-
-        redirectAttributes.addFlashAttribute("user", user);
-        redirectAttributes.addFlashAttribute("secretCode", secretCode);
-        System.out.println(user.getPassword());
-        System.out.println(user.getUsername());
-        System.out.println(user.getName());
-        System.out.println(inputCode.getString());
-        System.out.println(secretCode);
+    public String approveGet(@ModelAttribute("inputCode") StringWrapper inputCode) {
         return "auth/approveEmail";
     }
 
     @PostMapping("/approve")
-    public String approve(@ModelAttribute("inputCode") StringWrapper inputCode, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String approve(@ModelAttribute("inputCode") StringWrapper inputCode, BindingResult br,
+                          @ModelAttribute("user") UserDTO user,
+                          @ModelAttribute("secretCode") String secretCode, BindingResult bindingResult,
+                          SessionStatus sessionStatus) {
 
-        Map<String, ?> attrs = redirectAttributes.getFlashAttributes();
-        String secret = (String) attrs.get("secretCode");
-
-        if (secret.equals(inputCode.getString())) {
-            UserDTO user = (UserDTO) attrs.get("user");
+        if (inputCode.getValue().equals(secretCode)) {
             registerService.save(user);
+            sessionStatus.setComplete();
             return "redirect:/login";
         }
 
-        bindingResult.rejectValue("inputCode", "", "wrong code, try again");
+        br.rejectValue("value", "", "wrong code, try again");
 
         return "auth/approveEmail";
+    }
+
+    @GetMapping("/login")
+    public String login(@ModelAttribute("user") UserDTO userDTO) {
+        return "auth/login";
     }
 
 //    @PostMapping("/registration")
@@ -115,10 +107,6 @@ public class AuthController {
 //        return "redirect:/";
 //    }
 
-    @GetMapping("/login")
-    public String login(@ModelAttribute("user") UserDTO userDTO) {
-        return "auth/login";
-    }
 
 //    @PostMapping("/processLogin")
 //    public String loginPost(@ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult) {
