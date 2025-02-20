@@ -4,13 +4,12 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.BookDTO;
 import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
+import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.services.BookService;
-import com.wildiskin.cinema.services.DirectorService;
-import com.wildiskin.cinema.services.MailService;
-import com.wildiskin.cinema.services.MovieService;
+import com.wildiskin.cinema.models.User;
+import com.wildiskin.cinema.services.*;
 import com.wildiskin.cinema.util.*;
 import jakarta.mail.MessagingException;
 import org.hibernate.HibernateException;
@@ -19,6 +18,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,13 +27,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/")
+@SessionAttributes(value = {"movie"})
 public class CinemaController {
 
     private final MovieService movieService;
@@ -41,16 +45,21 @@ public class CinemaController {
     private final BookUpdateValidator bookUpdateValidator;
     private final DirectorUpdateValidator directorUpdateValidator;
     private final MovieUpdateValidator movieUpdateValidator;
-    private final MailService mailService;
+    private final UserService userService;
 
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator, MailService mailService) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator, UserService userService) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
         this.bookUpdateValidator = bookUpdateValidator;
         this.directorUpdateValidator = directorUpdateValidator;
         this.movieUpdateValidator = movieUpdateValidator;
-        this.mailService = mailService;
+        this.userService = userService;
+    }
+
+    @ModelAttribute("user")
+    public UserDTO createUser() {
+        return new UserDTO();
     }
 
     @GetMapping
@@ -80,6 +89,7 @@ public class CinemaController {
         }
 
         model.addAttribute("movie", m);
+
         return "cards/movie";
     }
 
@@ -269,6 +279,23 @@ public class CinemaController {
         return "redirect:/all/movies";
     }
 
+    @GetMapping("basket")
+    public String getBasket(@ModelAttribute("user") UserDTO userDTO, Model model) {
+        model.addAttribute("basket", userService.getBasketById(userDTO.getId()));
+        return "basket";
+    }
+
+    @GetMapping("addMovie")
+    public String addMovie(@ModelAttribute("movie") MovieDTO movieDTO, @AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
+        System.out.println(movieDTO.getId());
+        System.out.println(userDTO.getId());
+        Set<Movie> basket = userService.getBasketById(userDTO.getId());
+        basket.add(movieService.findById(movieDTO.getId()));
+
+        return "redirect:/all/movies";
+    }
+
     @ExceptionHandler
     public ResponseEntity<String> handlerInvalidIdInput(NotFoundException er) {
         return new ResponseEntity<>(er.getMessage() + " <a href='/'>back</a>", HttpStatus.NOT_FOUND);
@@ -277,18 +304,5 @@ public class CinemaController {
     @ExceptionHandler
     public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
         return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
-    }
-
-    @GetMapping("test/email")
-    public String dropPage(Model model) {
-        final EmailPlug email = new EmailPlug();
-        model.addAttribute("email", email);
-        return "testEmailThings";
-    }
-
-    @PostMapping("test/email")
-    public String verification(@ModelAttribute("email") EmailPlug email) {
-        mailService.sendMessage(email.getText(), "");
-        return "redirect:/";
     }
 }

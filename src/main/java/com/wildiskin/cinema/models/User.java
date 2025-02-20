@@ -92,4 +92,12 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Set<Movie> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Set<Movie> basket) {
+        this.basket = basket;
+    }
 }

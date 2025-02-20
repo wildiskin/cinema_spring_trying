@@ -82,7 +82,7 @@ public class AuthController {
         if (inputCode.getValue().equals(secretCode)) {
             registerService.save(user);
             sessionStatus.setComplete();
-            return "redirect:/login";
+            return "redirect:/auth/login";
         }
 
         br.rejectValue("value", "", "wrong code, try again");

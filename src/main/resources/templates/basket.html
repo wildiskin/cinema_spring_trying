@@ -2,13 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>My basket</title>
     <link rel="stylesheet" href="/css/styles.css" type="text/css">
 </head>
 <body>
-<form th:action="@{/test/email}" method="post" th:object="${email}">
-  <input type="email" th:field="*{text}" />
-  <input type="submit" />
-</form>
+
+<div th:each="movie : ${basket}">
+
+    <a th:text="${movie.getName()}"></a>
+
+</div>
 </body>
 </html>

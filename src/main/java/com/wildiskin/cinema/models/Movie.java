@@ -1,12 +1,9 @@
 package com.wildiskin.cinema.models;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Cascade;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "movie")
@@ -38,7 +35,7 @@ public class Movie {
     @JoinTable(name = "basket",
             joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<User> basket = new HashSet<>();
+    private Set<User> owners = new HashSet<>();
 
     public Movie() {}
 
@@ -48,12 +45,12 @@ public class Movie {
         this.description = description;
     }
 
-    public Set<User> getBasket() {
-        return basket;
+    public Set<User> getOwners() {
+        return owners;
     }
 
-    public void setBasket(Set<User> basket) {
-        this.basket = basket;
+    public void setOwners(Set<User> owners) {
+        this.owners = owners;
     }
 
     public long getId() {
