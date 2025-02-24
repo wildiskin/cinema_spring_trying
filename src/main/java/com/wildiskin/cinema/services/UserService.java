@@ -56,8 +56,8 @@ public class UserService implements UserDetailsService {
         return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole());
     }
 
-    public User findByIdUser(int id) {
-        Optional<User> superPosUser = userRepository.findById(id);
+    public User findByIdUser(long id) {
+        Optional<User> superPosUser = userRepository.findById((int) id);
         if (!superPosUser.isPresent()) {
             throw new UserNotFoundException("There is not user with this username in app");
         }

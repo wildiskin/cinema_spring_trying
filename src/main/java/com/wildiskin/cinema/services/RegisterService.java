@@ -31,6 +31,10 @@ public class RegisterService {
         userRepository.save(user);
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
     public void update(UserDTO userDTO) {
         long id = userDTO.getId();
         Optional<User> user = userRepository.findById((int) id);
@@ -42,6 +46,7 @@ public class RegisterService {
             u.setRole(userDTO.getRole());
             u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             u.setId(id);
+            u.setEmail(userDTO.getUsername());
             userRepository.save(u);
         }
     }

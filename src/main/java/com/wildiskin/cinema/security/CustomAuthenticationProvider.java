@@ -29,7 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
 
         String userName = auth.getName();
-        String password =auth.getCredentials().toString();
+        String password = auth.getCredentials().toString();
 
         UserDTO userDTO = userService.findByEmail(userName);
 

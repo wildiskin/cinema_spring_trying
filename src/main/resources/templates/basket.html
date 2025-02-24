@@ -8,9 +8,7 @@
 <body>
 
 <div th:each="movie : ${basket}">
-
-    <a th:text="${movie.getName()}"></a>
-
+    <a th:text="${movie.getName()}" th:href="${'/movie/' + movie.getId()}"></a>
 </div>
 </body>
 </html>

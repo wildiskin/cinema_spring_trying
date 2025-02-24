@@ -46,8 +46,9 @@ public class CinemaController {
     private final DirectorUpdateValidator directorUpdateValidator;
     private final MovieUpdateValidator movieUpdateValidator;
     private final UserService userService;
+    private final RegisterService registerService;
 
-    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator, UserService userService) {
+    public CinemaController(MovieService movieService, BookService bookService, DirectorService directorService, BookUpdateValidator bookUpdateValidator, DirectorUpdateValidator directorUpdateValidator, MovieUpdateValidator movieUpdateValidator, UserService userService, RegisterService registerService) {
         this.movieService = movieService;
         this.bookService = bookService;
         this.directorService = directorService;
@@ -55,11 +56,12 @@ public class CinemaController {
         this.directorUpdateValidator = directorUpdateValidator;
         this.movieUpdateValidator = movieUpdateValidator;
         this.userService = userService;
+        this.registerService = registerService;
     }
 
-    @ModelAttribute("user")
-    public UserDTO createUser() {
-        return new UserDTO();
+    @ModelAttribute("movie")
+    public Movie createMovie() {
+        return new Movie();
     }
 
     @GetMapping
@@ -280,18 +282,27 @@ public class CinemaController {
     }
 
     @GetMapping("basket")
-    public String getBasket(@ModelAttribute("user") UserDTO userDTO, Model model) {
+    public String getBasket(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("basket", userService.getBasketById(userDTO.getId()));
         return "basket";
     }
 
-    @GetMapping("addMovie")
+    @GetMapping("addToBasket")
     public String addMovie(@ModelAttribute("movie") MovieDTO movieDTO, @AuthenticationPrincipal UserDetails userDetails) {
         UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
-        System.out.println(movieDTO.getId());
-        System.out.println(userDTO.getId());
-        Set<Movie> basket = userService.getBasketById(userDTO.getId());
-        basket.add(movieService.findById(movieDTO.getId()));
+        User user = userService.findByIdUser(userDTO.getId());
+
+        Movie movie = movieService.findById(movieDTO.getId());
+        movie.getOwners().add(user);
+
+        System.out.println(movieDTO.getName());
+        System.out.println(userDTO.getName());
+        Set<Movie> basket = userService.getBasketById(user.getId());
+        basket.add(movie);
+
+        registerService.save(user);
+        movieService.save(movie);
 
         return "redirect:/all/movies";
     }
@@ -301,8 +312,8 @@ public class CinemaController {
         return new ResponseEntity<>(er.getMessage() + " <a href='/'>back</a>", HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
-        return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
+//        return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
+//    }
 }
