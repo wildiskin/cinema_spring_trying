@@ -7,8 +7,8 @@
 </head>
 <body>
 <h1>Hello friend</h1>
-<a href="/all/movies">Show all movies</a>
-<br>
+<h4><a href="/all/movies">Show all movies</a></h4>
+<hr/>
 <a href="/all/directors">Show all directors</a>
 <hr/>
 <a href="/all/books">Show all books</a>
@@ -20,9 +20,10 @@
 <a href="/new/director">Add director in collection</a>
 <br>
 <br>
+<a href="/basket">My basket</a>
+<hr/>
 <form th:action="@{/logout}" th:method="POST">
     <input type="submit" value="Logout" />
 </form>
-<a href="/basket">My basket</a>
 </body>
 </html>

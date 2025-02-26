@@ -10,5 +10,6 @@
 <div th:each="movie : ${basket}">
     <a th:text="${movie.getName()}" th:href="${'/movie/' + movie.getId()}"></a>
 </div>
+<a href="/emptyBasket" th:unless="${basket.isEmpty()}"><input type="submit" value="Empty basket"></a>
 </body>
 </html>

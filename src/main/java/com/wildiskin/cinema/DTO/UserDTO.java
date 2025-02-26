@@ -1,9 +1,14 @@
 package com.wildiskin.cinema.DTO;
 
+import com.wildiskin.cinema.models.Movie;
+import com.wildiskin.cinema.util.Basket;
 import com.wildiskin.cinema.util.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserDTO {
 
@@ -21,7 +26,7 @@ public class UserDTO {
     @Email
     private String username;
 
-
+    private Basket<Movie> basket = new Basket<>();
 
     private String role;
 
@@ -36,12 +41,13 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(long id,  String username, String name, String password, String role) {
+    public UserDTO(long id,  String username, String name, String password, String role, Set<Movie> basket) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.role = role;
         this.username = username;
+        this.basket = new Basket<>(basket);
     }
 
 
@@ -75,5 +81,13 @@ public class UserDTO {
 
     public void setUsername(@NotNull @Email String username) {
         this.username = username;
+    }
+
+    public Basket<Movie> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Basket<Movie> basket) {
+        this.basket = basket;
     }
 }

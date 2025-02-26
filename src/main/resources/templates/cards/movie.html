@@ -40,8 +40,9 @@
 <form th:action="@{/all/movies}" th:method="GET">
     <input type="submit" value="Back to list of movies" />
 </form>
-<form th:action="@{/addToBasket}" method="GET">
+<form th:action="@{/addToBasket}" method="GET" th:unless="${user.getBasket().containsById(movie.getId())}">
     <input type="submit" value="Add to basket">
 </form>
+<a href="/deleteFromBasket" th:if="${user.getBasket().containsById(movie.getId())}">Delete from basket</a>
 </body>
 </html>

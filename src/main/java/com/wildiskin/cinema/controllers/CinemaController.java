@@ -70,7 +70,7 @@ public class CinemaController {
     }
 
     @GetMapping("movie/{id}")
-    public String movieCard(@PathVariable("id") String id, Model model) {
+    public String movieCard(@PathVariable("id") String id, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Movie movie = movieService.findById(Long.parseLong(id));
         String year = movie.getYear() == null ? "" : movie.getYear().toString();
         if (movie == null) {throw new NotFoundException("Movie with this id: " + id + " doesn't exists");}
@@ -90,6 +90,7 @@ public class CinemaController {
             m.setSourceBook(bni);
         }
 
+        model.addAttribute("user", userService.findByEmail(userDetails.getUsername()));
         model.addAttribute("movie", m);
 
         return "cards/movie";
@@ -281,6 +282,8 @@ public class CinemaController {
         return "redirect:/all/movies";
     }
 
+
+
     @GetMapping("basket")
     public String getBasket(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
@@ -307,13 +310,46 @@ public class CinemaController {
         return "redirect:/all/movies";
     }
 
+    @GetMapping("deleteFromBasket")
+    public String deleteFromBasket(@ModelAttribute("movie") MovieDTO movieDTO, @AuthenticationPrincipal UserDetails userDetails) {
+        Movie movie = movieService.findById(movieDTO.getId());
+
+        long id = userService.findByEmail(userDetails.getUsername()).getId();
+        User user = userService.findByIdUser(id);
+        Set<Movie> basket = user.getBasket();
+
+        basket.remove(movie);
+        movie.getOwners().remove(user);
+
+        registerService.save(user);
+        movieService.save(movie);
+
+        return "redirect:/all/movies";
+    }
+
+    @GetMapping("emptyBasket")
+    public String emptyBasket(@AuthenticationPrincipal UserDetails userDetails) {
+
+        User user = userService.findByIdUser(userService.findByEmail(userDetails.getUsername()).getId());
+        for (Movie m : user.getBasket()) {
+            m.getOwners().remove(user);
+            movieService.save(m);
+        }
+
+        user.getBasket().clear();
+        registerService.save(user);
+
+        return "redirect:/";
+    }
+
+
     @ExceptionHandler
     public ResponseEntity<String> handlerInvalidIdInput(NotFoundException er) {
         return new ResponseEntity<>(er.getMessage() + " <a href='/'>back</a>", HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler
-//    public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
-//        return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
-//    }
+    @ExceptionHandler
+    public ResponseEntity<String> handlerHibernateEx(HibernateException he) {
+        return new ResponseEntity<>(" <a href='/'>1 book - 1 movie, back to main page</a>", HttpStatus.CONFLICT);
+    }
 }

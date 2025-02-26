@@ -1,5 +1,6 @@
 package com.wildiskin.cinema.models;
 
+import com.wildiskin.cinema.util.Basket;
 import com.wildiskin.cinema.util.Roles;
 import jakarta.persistence.*;
 
