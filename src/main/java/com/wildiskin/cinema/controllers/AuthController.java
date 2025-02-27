@@ -3,26 +3,18 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.UserDTO;
 import com.wildiskin.cinema.services.MailService;
 import com.wildiskin.cinema.services.RegisterService;
-import com.wildiskin.cinema.services.UserService;
 import com.wildiskin.cinema.util.CodeGenerator;
 import com.wildiskin.cinema.util.StringWrapper;
-import com.wildiskin.cinema.util.UserValidatorLog;
 import com.wildiskin.cinema.util.UserValidatorReg;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Map;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/auth")
@@ -32,6 +24,7 @@ public class AuthController {
     private final RegisterService registerService;
     private final UserValidatorReg userValidatorReg;
     private final MailService mailService;
+
 
     @Autowired
     public AuthController(RegisterService registerService, UserValidatorReg userValidatorReg, MailService mailService) {
@@ -51,13 +44,15 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) {
+    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) throws IOException, InterruptedException {
 
         userValidatorReg.validate(userDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "/auth/registration";
         }
+
+        String phoneNumber = userDTO.getPhone();
 
         String secretCode = CodeGenerator.generate();
         mailService.sendMessage(userDTO.getUsername(), secretCode);

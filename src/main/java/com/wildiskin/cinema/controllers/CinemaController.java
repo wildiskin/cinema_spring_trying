@@ -342,7 +342,6 @@ public class CinemaController {
         return "redirect:/";
     }
 
-
     @ExceptionHandler
     public ResponseEntity<String> handlerInvalidIdInput(NotFoundException er) {
         return new ResponseEntity<>(er.getMessage() + " <a href='/'>back</a>", HttpStatus.NOT_FOUND);

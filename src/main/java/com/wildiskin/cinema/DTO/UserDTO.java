@@ -25,6 +25,7 @@ public class UserDTO {
     @NotNull
     @Email
     private String username;
+    private String phone;
 
     private Basket<Movie> basket = new Basket<>();
 
@@ -89,5 +90,13 @@ public class UserDTO {
 
     public void setBasket(Basket<Movie> basket) {
         this.basket = basket;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

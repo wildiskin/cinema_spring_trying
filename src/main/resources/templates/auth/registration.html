@@ -15,6 +15,10 @@
     <input type="email" th:field="*{username}" id="username"/>
     <div style="color:darkred" th:if="${#fields.errors('username')}" th:errors="*{username}" ></div>
     <br/>
+    <label for="username">Enter your phone</label>
+    <input type="number" th:field="*{phone}" id="phone"/>
+    <div style="color:darkred" th:if="${#fields.errors('phone')}" th:errors="*{phone}" ></div>
+    <br/>
     <label for="password">Enter your password</label>
     <input type="password" th:field="*{password}" id="password"/>
     <div style="color:darkred" th:if="${#fields.errors('password')}" th:errors="*{password}"></div>
