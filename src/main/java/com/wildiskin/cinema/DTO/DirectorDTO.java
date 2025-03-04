@@ -3,7 +3,8 @@ package com.wildiskin.cinema.DTO;
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.util.MovieNameId;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.*;
+import jakarta.validation.constraints.Size;
+//import org.hibernate.validator.constraints.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,9 @@ public class DirectorDTO {
 
     private MovieNameId newMovie;
 
-    @Length(min = 2, max = 50, message = "Director's name should be between 2 and 50 characters")
+//    @Length(min = 2, max = 50, message = "Director's name should be between 2 and 50 characters")
     @NotNull
+    @Size(min = 2, max = 50, message = "Director's name should be between 2 and 50 characters")
     private String name;
 
     private List<MovieNameId> movies;

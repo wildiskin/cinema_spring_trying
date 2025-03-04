@@ -27,6 +27,7 @@ public class RegisterService {
         User user = new User(userDTO.getName(), password, userDTO.getUsername());
 
         user.setRole(userDTO.getRole());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
 
         userRepository.save(user);
     }

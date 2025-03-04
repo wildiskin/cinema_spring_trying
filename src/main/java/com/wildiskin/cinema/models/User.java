@@ -28,6 +28,12 @@ public class User {
     @Column(name = "role")
     private String role;
 
+    @Column(name="phone_number")
+    private String phoneNumber;
+
+    @Column(name="is_number_approved")
+    private boolean isNumberApproved;
+
     @ManyToMany
     @JoinTable(name = "basket",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -100,5 +106,21 @@ public class User {
 
     public void setBasket(Set<Movie> basket) {
         this.basket = basket;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isNumberApproved() {
+        return isNumberApproved;
+    }
+
+    public void setNumberApproved(boolean numberApproved) {
+        isNumberApproved = numberApproved;
     }
 }

@@ -52,7 +52,10 @@ public class AuthController {
             return "/auth/registration";
         }
 
-        String phoneNumber = userDTO.getPhone();
+        String phoneNumber = userDTO.getPhoneNumber();
+        String email = userDTO.getUsername();
+
+
 
         String secretCode = CodeGenerator.generate();
         mailService.sendMessage(userDTO.getUsername(), secretCode);

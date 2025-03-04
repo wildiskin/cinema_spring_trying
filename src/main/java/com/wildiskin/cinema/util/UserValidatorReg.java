@@ -28,5 +28,9 @@ public class UserValidatorReg implements Validator {
         if (userRepository.findByEmail(userDTO.getUsername()) != null) {
             errors.rejectValue("email", "", "account with this email also exist");
         }
+        String number = userDTO.getPhoneNumber();
+        if (number != null) {
+
+        }
     }
 }

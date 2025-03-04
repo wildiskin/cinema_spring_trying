@@ -2,12 +2,11 @@ package com.wildiskin.cinema.DTO;
 
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.util.Basket;
-import com.wildiskin.cinema.util.Roles;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.Size;
 
-import java.util.HashSet;
+
 import java.util.Set;
 
 public class UserDTO {
@@ -15,17 +14,18 @@ public class UserDTO {
     private long id;
 
     @NotNull(message = "username is required")
-    @Length(min = 2, max = 50)
+    @Size(min = 2, max = 50)
     private String name;
 
     @NotNull(message = "password is required")
-    @Length(min = 8, max = 50)
+    @Size(min = 8, max = 50)
     private String password;
 
     @NotNull
     @Email
     private String username;
-    private String phone;
+
+    private String phoneNumber;
 
     private Basket<Movie> basket = new Basket<>();
 
@@ -92,11 +92,11 @@ public class UserDTO {
         this.basket = basket;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

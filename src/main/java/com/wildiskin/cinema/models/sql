@@ -17,4 +17,5 @@ INSERT INTO movie (name, year, description, director_id, book_id) VALUES
     ('Kill Bill 2', 2001, 'beautiful massacre', 1, null),
     ('All quiet on the western front', 2020, 'War between Germany and France', 2, null);
 
-INSERT INTO users (name, password, role, email) values ('wildiskin', '$2a$10$X47enGwoX3e7b6yL/4kCX.UlZltj99daFp5etu7.1zYELrI7/ndQq', 'ROLE_USER', 'wildiskin@gmail.com');
+INSERT INTO users (name, password, phone_number, role, email) values ('wildiskin', '$2a$10$X47enGwoX3e7b6yL/4kCX.UlZltj99daFp5etu7.1zYELrI7/ndQq', '89536602022', 'ROLE_USER', 'wildiskin@gmail.com');
+

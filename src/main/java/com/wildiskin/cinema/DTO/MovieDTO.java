@@ -2,18 +2,15 @@ package com.wildiskin.cinema.DTO;
 
 import com.wildiskin.cinema.util.BookNameId;
 import com.wildiskin.cinema.util.DirectorNameId;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.*;
+
 
 public class MovieDTO {
 
     private long id;
 
     @NotNull(message = "Название фильма - обязательное поле")
-    @Length(min = 1, max = 50, message = "Название фильма должно быть от 1 до 50 символов")
+    @Size(min = 1, max = 50, message = "Название фильма должно быть от 1 до 50 символов")
     private String name;
 
     private DirectorNameId director;
@@ -21,7 +18,7 @@ public class MovieDTO {
 
     private String year;
 
-    @Length(max = 500, message = "Описание не должно занимать более 150 символов")
+    @Size(max = 500, message = "Описание не должно занимать более 150 символов")
     private String description;
 
     public MovieDTO(long id, String name, String year, String description) {

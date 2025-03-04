@@ -35,9 +35,12 @@ public class BookValidator implements Validator {
             errors.rejectValue("name", "", "There is already such a book");
         }
         if (movieString != null) {
-            Movie movie = movieService.findByName(movieString);
-            if (movie == null) {errors.rejectValue("movieChildName", "", "There is no movie by the \""+ movieString + "\" in collection");}
+            if (!movieString.isBlank()) {
+                Movie movie = movieService.findByName(movieString);
+                if (movie == null) {
+                    errors.rejectValue("movieChildName", "", "There is no movie by the \"" + movieString + "\" in collection");
+                }
+            }
         }
-
     }
 }

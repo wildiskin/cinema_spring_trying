@@ -1,20 +1,21 @@
 package com.wildiskin.cinema.DTO;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 
 public class BookDTO {
 
     private long id;
 
-    @Length(min = 1, max = 50, message = "Book's name should be between 1 and 50 characters")
+    @Size(min = 1, max = 50, message = "Book's name should be between 1 and 50 characters")
     @NotNull(message = "Book shall have a name")
     private String name;
 
-    @Length(min = 2, max = 50, message = "Genre's name should be between 1 and 50 characters")
+    @Size(min = 2, max = 50, message = "Genre's name should be between 1 and 50 characters")
     private String genre;
 
-    @Length(min = 1, max = 50, message = "Author's name should be between 1 and 50 characters")
+    @Size(min = 1, max = 50, message = "Author's name should be between 1 and 50 characters")
     private String author;
 
     private String movieChildName;
