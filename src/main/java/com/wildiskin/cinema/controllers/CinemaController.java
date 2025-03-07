@@ -11,13 +11,9 @@ import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.services.*;
 import com.wildiskin.cinema.util.*;
-import jakarta.mail.MessagingException;
 import org.hibernate.HibernateException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,8 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -297,7 +291,7 @@ public class CinemaController {
         User user = userService.findByIdUser(userDTO.getId());
 
         Movie movie = movieService.findById(movieDTO.getId());
-        movie.getOwners().add(user);
+        movie.getPotentialBuyers().add(user);
 
         System.out.println(movieDTO.getName());
         System.out.println(userDTO.getName());
@@ -319,7 +313,7 @@ public class CinemaController {
         Set<Movie> basket = user.getBasket();
 
         basket.remove(movie);
-        movie.getOwners().remove(user);
+        movie.getPotentialBuyers().remove(user);
 
         registerService.save(user);
         movieService.save(movie);
@@ -332,13 +326,37 @@ public class CinemaController {
 
         User user = userService.findByIdUser(userService.findByEmail(userDetails.getUsername()).getId());
         for (Movie m : user.getBasket()) {
-            m.getOwners().remove(user);
+            m.getPotentialBuyers().remove(user);
             movieService.save(m);
         }
 
         user.getBasket().clear();
         registerService.save(user);
 
+        return "redirect:/";
+    }
+
+    @GetMapping("myProfile")
+    public String addNumberPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        model.addAttribute("user", userService.findByEmail(userDetails.getUsername()));
+        return "profile";
+    }
+
+    @PostMapping("editProfile")
+    public String editProfile(@ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
+
+
+
+        if (bindingResult.hasErrors()) {
+            return "/profile";
+        }
+
+        User user = userService.findUserByEmail(userDetails.getUsername());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setPassword(userDTO.getPassword());
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getUsername());
+        registerService.save(user);
         return "redirect:/";
     }
 

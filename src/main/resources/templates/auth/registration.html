@@ -11,7 +11,6 @@
     <label for="name">Enter a name</label>
     <input type="text" th:field="*{name}" id="name"/>
     <div style="color:darkred" th:if="${#fields.errors('name')}" th:errors="*{name}"></div>
-
     <br/>
 
     <label for="username">Enter your email address</label>
@@ -19,15 +18,9 @@
     <div style="color:darkred" th:if="${#fields.errors('username')}" th:errors="*{username}" ></div>
     <br/>
 
-    <label for="username">Enter your phone</label>
-    <input type="number" th:field="*{phoneNumber}" id="phone"/>
-    <div style="color:darkred" th:if="${#fields.errors('phone')}" th:errors="*{phoneNumber}" ></div>
-    <br/>
-
     <label for="password">Enter your password</label>
     <input type="password" th:field="*{password}" id="password"/>
     <div style="color:darkred" th:if="${#fields.errors('password')}" th:errors="*{password}"></div>
-
     <br>
 
     <input type="submit" value="create">

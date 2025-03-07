@@ -48,8 +48,19 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UserNotFoundException("There is not user with this username in app");
         }
-        return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+        UserDTO result = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+        result.setPhoneNumber(user.getPhoneNumber());
+        return result;
     }
+
+    public User findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("There is not user with this username in app");
+        }
+        return user;
+    }
+
 
     public UserDTO findById(int id) {
         Optional<User> superPosUser = userRepository.findById(id);
@@ -83,5 +94,16 @@ public class UserService implements UserDetailsService {
             usersDTO.add(new UserDTO(u.getId(), u.getEmail(), u.getName(), u.getPassword(), u.getRole(), u.getBasket()));
         }
         return usersDTO;
+    }
+
+    public UserDTO findByPhoneNumber(String phoneNumber) {
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        if (user == null) {
+            throw new UserNotFoundException("There is not user with this username in app");
+        }
+
+        UserDTO result = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+        result.setPhoneNumber(user.getPhoneNumber());
+        return result;
     }
 }

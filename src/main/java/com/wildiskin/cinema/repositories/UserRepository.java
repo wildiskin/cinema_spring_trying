@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query(value = "SELECT u.basket FROM User u WHERE u.id = ?1")
     public Set<Movie> getBasket(long id);
+
+    public User findByPhoneNumber(String phoneNumber);
 }

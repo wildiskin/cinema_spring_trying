@@ -25,14 +25,16 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    private String photoLink;
+
     @Column(name = "role")
     private String role;
 
     @Column(name="phone_number")
     private String phoneNumber;
 
-    @Column(name="is_number_approved")
-    private boolean isNumberApproved;
+    @Column(name="is_phone_number_approved")
+    private boolean isPhoneNumberApproved;
 
     @ManyToMany
     @JoinTable(name = "basket",
@@ -40,10 +42,16 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"))
     private Set<Movie> basket = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "collection_of_movies",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"))
+    private Set<Movie> collectionOfMovies = new HashSet<>();
+
     public User() {}
 
-    public User(String name, String password, String email) {
-        this.name = name;
+    private User(UserBuilder userBuilder) {
+        this.name = userBuilder.name;
         this.password = password;
         this.email = email;
     }
@@ -116,11 +124,52 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isNumberApproved() {
-        return isNumberApproved;
+    public String getPhotoLink() {
+        return photoLink;
     }
 
-    public void setNumberApproved(boolean numberApproved) {
-        isNumberApproved = numberApproved;
+    public void setPhotoLink(String photoLink) {
+        this.photoLink = photoLink;
+    }
+
+    public boolean isPhoneNumberApproved() {
+        return isPhoneNumberApproved;
+    }
+
+    public void setPhoneNumberApproved(boolean phoneNumberApproved) {
+        isPhoneNumberApproved = phoneNumberApproved;
+    }
+
+    public Set<Movie> getCollectionOfMovies() {
+        return collectionOfMovies;
+    }
+
+    public void setCollectionOfMovies(Set<Movie> collectionOfMovies) {
+        this.collectionOfMovies = collectionOfMovies;
+    }
+
+    public static class UserBuilder {
+
+        private String name;
+
+        private String email;
+
+        private String password;
+
+        private boolean isPhoneNumberApproved;
+
+        private String phoneNumber;
+
+        private String photoLink;
+
+        public UserBuilder(String name, String email, String password) {
+            this.name = name;
+            this.email = email;
+            this.password = password;
+            this.isPhoneNumberApproved = false;
+        }
+
+
+
     }
 }

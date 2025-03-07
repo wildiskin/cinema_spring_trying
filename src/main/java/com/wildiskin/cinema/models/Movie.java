@@ -14,6 +14,8 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private long price;
+
     @Column(name="name")
     private String name;
 
@@ -35,7 +37,13 @@ public class Movie {
     @JoinTable(name = "basket",
             joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<User> owners = new HashSet<>();
+    private Set<User> potentialBuyers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "collection_of_movies",
+            joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    private Set<User> owners;
 
     public Movie() {}
 
@@ -45,12 +53,12 @@ public class Movie {
         this.description = description;
     }
 
-    public Set<User> getOwners() {
-        return owners;
+    public Set<User> getPotentialBuyers() {
+        return potentialBuyers;
     }
 
-    public void setOwners(Set<User> owners) {
-        this.owners = owners;
+    public void setPotentialBuyers(Set<User> owners) {
+        this.potentialBuyers = owners;
     }
 
     public long getId() {
@@ -100,4 +108,21 @@ public class Movie {
     public void setSourceBook(Book sourceBook) {
         this.sourceBook = sourceBook;
     }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
+    }
+
+    public Set<User> getOwners() {
+        return owners;
+    }
+
+    public void setOwners(Set<User> owners) {
+        this.owners = owners;
+    }
 }
+
