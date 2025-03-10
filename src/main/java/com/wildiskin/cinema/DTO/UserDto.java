@@ -1,15 +1,15 @@
 package com.wildiskin.cinema.DTO;
 
 import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.util.Basket;
+import com.wildiskin.cinema.util.CustomSet;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
+import java.util.HashSet;
 import java.util.Set;
 
-public class UserDTO {
+public class UserDto {
 
     private long id;
 
@@ -23,13 +23,17 @@ public class UserDTO {
 
     @NotNull
     @Email
-    private String username;
+    private String email;
 
     private String phoneNumber;
 
-    private Basket<Movie> basket = new Basket<>();
+    private CustomSet<Movie> basket = new CustomSet<>();
+
+    private CustomSet<Movie> collectionOfMovies = new CustomSet<>();
 
     private String role;
+
+    private String photoLink;
 
     public String getRole() {
         return role;
@@ -39,16 +43,13 @@ public class UserDTO {
         this.role = role;
     }
 
-    public UserDTO() {
+    public UserDto() {
     }
 
-    public UserDTO(long id,  String username, String name, String password, String role, Set<Movie> basket) {
-        this.id = id;
+    public UserDto(String email, String name, String password) {
         this.name = name;
         this.password = password;
-        this.role = role;
-        this.username = username;
-        this.basket = new Basket<>(basket);
+        this.email = email;
     }
 
 
@@ -76,27 +77,43 @@ public class UserDTO {
         this.id = id;
     }
 
-    public @NotNull @Email String getUsername() {
-        return username;
-    }
-
-    public void setUsername(@NotNull @Email String username) {
-        this.username = username;
-    }
-
-    public Basket<Movie> getBasket() {
-        return basket;
-    }
-
-    public void setBasket(Basket<Movie> basket) {
-        this.basket = basket;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public @NotNull @Email String getEmail() {
+        return email;
+    }
+
+    public void setEmail(@NotNull @Email String email) {
+        this.email = email;
+    }
+
+    public String getPhotoLink() {
+        return photoLink;
+    }
+
+    public void setPhotoLink(String photoLink) {
+        this.photoLink = photoLink;
+    }
+
+    public CustomSet<Movie> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(CustomSet<Movie> basket) {
+        this.basket = basket;
+    }
+
+    public CustomSet<Movie> getCollectionOfMovies() {
+        return collectionOfMovies;
+    }
+
+    public void setCollectionOfMovies(CustomSet<Movie> collectionOfMovies) {
+        this.collectionOfMovies = collectionOfMovies;
     }
 }

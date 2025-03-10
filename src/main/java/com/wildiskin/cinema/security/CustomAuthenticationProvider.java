@@ -1,6 +1,6 @@
 package com.wildiskin.cinema.security;
 
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +31,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String userName = auth.getName();
         String password = auth.getCredentials().toString();
 
-        UserDTO userDTO = userService.findByEmail(userName);
+        UserDto userDto = userService.findByEmail(userName);
 
-        if (userDTO == null) {throw new BadCredentialsException("User with username: \"" + userName + "\" not found");}
-        if (!passwordEncoder.matches(password, userDTO.getPassword())) {throw new BadCredentialsException("Wrong password");}
+        if (userDto == null) {throw new BadCredentialsException("User with username: \"" + userName + "\" not found");}
+        if (!passwordEncoder.matches(password, userDto.getPassword())) {throw new BadCredentialsException("Wrong password");}
 
-        User user = new User(userDTO.getName(), userDTO.getPassword(), userDTO.getUsername());
-        user.setRole(userDTO.getRole());
-        user.setId(userDTO.getId());
+        User user = new User.UserBuilder(userDto.getName(), userDto.getEmail(), userDto.getPassword())
+                .setPhoneNumber(userDto.getPhoneNumber())
+                .build();
 
         UserDetails principal = new UserDetailsImpl(user);
 

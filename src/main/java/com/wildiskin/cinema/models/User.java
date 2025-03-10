@@ -1,6 +1,5 @@
 package com.wildiskin.cinema.models;
 
-import com.wildiskin.cinema.util.Basket;
 import com.wildiskin.cinema.util.Roles;
 import jakarta.persistence.*;
 
@@ -50,29 +49,14 @@ public class User {
 
     public User() {}
 
-    private User(UserBuilder userBuilder) {
-        this.name = userBuilder.name;
-        this.password = password;
-        this.email = email;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-
-        if (role != null) {
-            role = role.toUpperCase();
-            role = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-            for (Roles r : Roles.values()) {
-                if (r.name().equalsIgnoreCase(role)) {
-                    this.role = r.name();
-                    return;
-                }
-            }
-        }
-        this.role = "ROLE_USER";
+    private User(UserBuilder builder) {
+        this.name = builder.name;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.isPhoneNumberApproved = builder.isPhoneNumberApproved;
+        this.photoLink = builder.photoLink;
+        this.phoneNumber = builder.phoneNumber;
+        this.setRole(null);
     }
 
     public long getId() {
@@ -82,7 +66,6 @@ public class User {
     public void setId(long id) {
         this.id = id;
     }
-
 
     public String getName() {
         return name;
@@ -108,12 +91,30 @@ public class User {
         this.email = email;
     }
 
-    public Set<Movie> getBasket() {
-        return basket;
+    public String getPhotoLink() {
+        return photoLink;
     }
 
-    public void setBasket(Set<Movie> basket) {
-        this.basket = basket;
+    public void setPhotoLink(String photoLink) {
+        this.photoLink = photoLink;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        if (role != null) {
+            role = role.toUpperCase();
+            role = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+            for (Roles r : Roles.values()) {
+                if (r.name().equalsIgnoreCase(role)) {
+                    this.role = r.name();
+                    return;
+                }
+            }
+        }
+        this.role = "ROLE_USER";
     }
 
     public String getPhoneNumber() {
@@ -124,20 +125,20 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPhotoLink() {
-        return photoLink;
-    }
-
-    public void setPhotoLink(String photoLink) {
-        this.photoLink = photoLink;
-    }
-
     public boolean isPhoneNumberApproved() {
         return isPhoneNumberApproved;
     }
 
     public void setPhoneNumberApproved(boolean phoneNumberApproved) {
         isPhoneNumberApproved = phoneNumberApproved;
+    }
+
+    public Set<Movie> getBasket() {
+        return basket;
+    }
+
+    public void setBasket(Set<Movie> basket) {
+        this.basket = basket;
     }
 
     public Set<Movie> getCollectionOfMovies() {
@@ -169,7 +170,24 @@ public class User {
             this.isPhoneNumberApproved = false;
         }
 
+        public UserBuilder setIsPhoneNumberApproved(boolean bool) {
+            this.isPhoneNumberApproved = bool;
+            return this;
+        }
 
+        public UserBuilder setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+
+        public UserBuilder setPhotoLink(String photoLink) {
+            this.photoLink = photoLink;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
 
     }
 }

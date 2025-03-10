@@ -1,11 +1,12 @@
 package com.wildiskin.cinema.services;
 
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.models.Movie;
 import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.repositories.UserRepository;
 
 import com.wildiskin.cinema.security.UserDetailsImpl;
+import com.wildiskin.cinema.util.CustomSet;
 import com.wildiskin.cinema.util.UserNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -43,13 +41,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDTO findByEmail(String email) {
+    public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserNotFoundException("There is not user with this username in app");
         }
-        UserDTO result = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+        UserDto result = new UserDto(user.getEmail(), user.getName(), user.getPassword());
+        result.setId(user.getId());
+        result.setRole(user.getRole());
+        result.setBasket(CustomSet.newBySet(user.getBasket()));
         result.setPhoneNumber(user.getPhoneNumber());
+
         return result;
     }
 
@@ -62,13 +64,19 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserDTO findById(int id) {
+    public UserDto findById(int id) {
         Optional<User> superPosUser = userRepository.findById(id);
         if (!superPosUser.isPresent()) {
             throw new UserNotFoundException("There is not user with this username in app");
         }
         User user = superPosUser.get();
-        return new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+
+        UserDto result = new UserDto(user.getEmail(), user.getName(), user.getPassword());
+        result.setId(user.getId());
+        result.setRole(user.getRole());
+        result.setBasket(CustomSet.newBySet(user.getBasket()));
+
+        return result;
     }
 
     public User findByIdUser(long id) {
@@ -87,23 +95,38 @@ public class UserService implements UserDetailsService {
         userRepository.deleteById((int) id);
     }
 
-    public List<UserDTO> findAll() {
+    public List<UserDto> findAll() {
         List<User> users = userRepository.findAll();
-        List<UserDTO> usersDTO = new ArrayList<>(users.size());
+        List<UserDto> usersDto = new ArrayList<>(users.size());
         for (User u : users) {
-            usersDTO.add(new UserDTO(u.getId(), u.getEmail(), u.getName(), u.getPassword(), u.getRole(), u.getBasket()));
+            UserDto one = new UserDto(u.getEmail(), u.getName(), u.getPassword());
+            one.setId(u.getId());
+            one.setRole(u.getRole());
+            one.setBasket(CustomSet.newBySet(u.getBasket()));
+            usersDto.add(one);
         }
-        return usersDTO;
+        return usersDto;
     }
 
-    public UserDTO findByPhoneNumber(String phoneNumber) {
+    public UserDto findByPhoneNumber(String phoneNumber) {
+
+        int len = phoneNumber.length();
+        if
+
+        phoneNumber.subSequence(0, len);
+
         User user = userRepository.findByPhoneNumber(phoneNumber);
+
         if (user == null) {
             throw new UserNotFoundException("There is not user with this username in app");
         }
 
-        UserDTO result = new UserDTO(user.getId(), user.getEmail(), user.getName(), user.getPassword(), user.getRole(), user.getBasket());
+        UserDto result = new UserDto(user.getEmail(), user.getName(), user.getPassword());
+        result.setId(user.getId());
+        result.setRole(user.getRole());
+        result.setBasket(CustomSet.newBySet(user.getBasket()));
         result.setPhoneNumber(user.getPhoneNumber());
+
         return result;
     }
 }

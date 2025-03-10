@@ -1,5 +1,6 @@
 package com.wildiskin.cinema.telegramBot;
 
+import com.wildiskin.cinema.services.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,13 +27,20 @@ import java.util.Collections;
 @Component
 public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
-    private TelegramClient telegramClient;
-
     @Value("${telegram.bot.token}")
     private String TOKEN;
 
     @Value("${telegram.bot.username}")
     private String USERNAME;
+
+    private TelegramClient telegramClient;
+
+    private final UserService userService;
+
+    @Autowired
+    public TelegramBot(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostConstruct
     public void init() {
@@ -80,7 +88,13 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
                 e.printStackTrace();
             }
         }
-        SendMessage message1 = SendMessage.builder().chatId(update.getMessage().getChatId()).text(update.getMessage().getContact().getPhoneNumber()).build();
+
+        String phoneNumber = update.getMessage().getContact().getPhoneNumber();
+
+        SendMessage message1 = SendMessage.builder()
+                .chatId(update.getMessage().getChatId())
+                .text(update.getMessage().getContact().getPhoneNumber())
+                .build();
 
 //        try {
 //            telegramClient.execute(message1); // Sending our message object to user

@@ -1,9 +1,8 @@
 package com.wildiskin.cinema.services;
 
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.models.User;
 import com.wildiskin.cinema.repositories.UserRepository;
-import com.wildiskin.cinema.util.Roles;
 import com.wildiskin.cinema.util.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,12 +21,13 @@ public class RegisterService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void save(UserDTO userDTO) {
-        String password = passwordEncoder.encode(userDTO.getPassword());
-        User user = new User(userDTO.getName(), password, userDTO.getUsername());
+    public void save(UserDto userDto) {
+        String password = passwordEncoder.encode(userDto.getPassword());
+        User user = new User.UserBuilder(userDto.getName(), userDto.getEmail(), password)
+                .setPhoneNumber(userDto.getPhoneNumber())
+                .build();
 
-        user.setRole(userDTO.getRole());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setRole(userDto.getRole());
 
         userRepository.save(user);
     }
@@ -36,7 +36,7 @@ public class RegisterService {
         userRepository.save(user);
     }
 
-    public void update(UserDTO userDTO) {
+    public void update(UserDto userDTO) {
         long id = userDTO.getId();
         Optional<User> user = userRepository.findById((int) id);
         if (!user.isPresent())
@@ -47,7 +47,7 @@ public class RegisterService {
             u.setRole(userDTO.getRole());
             u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             u.setId(id);
-            u.setEmail(userDTO.getUsername());
+            u.setEmail(userDTO.getEmail());
             userRepository.save(u);
         }
     }

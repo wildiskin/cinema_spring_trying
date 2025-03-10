@@ -1,9 +1,7 @@
 package com.wildiskin.cinema.controllers;
 
 import com.wildiskin.cinema.DTO.MovieDTO;
-import com.wildiskin.cinema.DTO.UserDTO;
-import com.wildiskin.cinema.models.Movie;
-import com.wildiskin.cinema.models.User;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.services.MovieService;
 import com.wildiskin.cinema.services.RegisterService;
 import com.wildiskin.cinema.services.UserService;
@@ -16,12 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,17 +39,17 @@ public class AdminController {
     }
 
     @GetMapping("/showAllUsers")
-    public List<UserDTO> showUsers() {
+    public List<UserDto> showUsers() {
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public UserDTO showById(@PathVariable("id") int id) {
+    public UserDto showById(@PathVariable("id") int id) {
         return userService.findById(id);
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<HttpStatus> create(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> create(@RequestBody @Valid UserDto userDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
             List<String> errors = bindingResult.getFieldErrors().stream().map(e -> e.getField() + " - " + e.getDefaultMessage() + ";").collect(Collectors.toList());
@@ -69,7 +64,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<HttpStatus> update(@RequestBody @Valid UserDto userDTO, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -86,7 +81,7 @@ public class AdminController {
 
     @GetMapping("/deleteUser/{id}")
     public HttpEntity<HttpStatus> delete(@PathVariable("id") long id) {
-        UserDTO user = userService.findById((int) id);
+        UserDto user = userService.findById((int) id);
         if (user == null)
             throw new UserNotFoundException("User with this id wasn't found");
         else {

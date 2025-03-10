@@ -1,6 +1,6 @@
 package com.wildiskin.cinema.controllers;
 
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.services.MailService;
 import com.wildiskin.cinema.services.RegisterService;
 import com.wildiskin.cinema.util.CodeGenerator;
@@ -34,17 +34,17 @@ public class AuthController {
     }
 
     @ModelAttribute("user")
-    public UserDTO createUser() {
-        return new UserDTO();
+    public UserDto createUser() {
+        return new UserDto();
     }
 
     @GetMapping("/registration")
-    public String registration(@ModelAttribute("user") UserDTO userDTO) {
+    public String registration(@ModelAttribute("user") UserDto userDTO) {
         return "auth/registration";
     }
 
     @PostMapping("/registration")
-    public String verification(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult bindingResult, Model model) throws IOException, InterruptedException {
+    public String verification(@ModelAttribute("user") @Valid UserDto userDTO, BindingResult bindingResult, Model model) throws IOException, InterruptedException {
 
         userValidatorReg.validate(userDTO, bindingResult);
 
@@ -53,7 +53,7 @@ public class AuthController {
         }
 
         String secretCode = CodeGenerator.generate();
-        mailService.sendMessage(userDTO.getUsername(), secretCode);
+        mailService.sendMessage(userDTO.getEmail(), secretCode);
 
         model.addAttribute("secretCode", secretCode);
         model.addAttribute("user", userDTO);
@@ -68,7 +68,7 @@ public class AuthController {
 
     @PostMapping("/approve")
     public String approve(@ModelAttribute("inputCode") StringWrapper inputCode, BindingResult br,
-                          @ModelAttribute("user") UserDTO user,
+                          @ModelAttribute("user") UserDto user,
                           @ModelAttribute("secretCode") String secretCode, BindingResult bindingResult,
                           SessionStatus sessionStatus) {
 
@@ -84,7 +84,7 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(@ModelAttribute("user") UserDTO userDTO) {
+    public String login(@ModelAttribute("user") UserDto userDTO) {
         return "auth/login";
     }
 

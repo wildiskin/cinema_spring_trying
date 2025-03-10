@@ -43,7 +43,7 @@ public class Movie {
     @JoinTable(name = "collection_of_movies",
             joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<User> owners;
+    private Set<User> owners = new HashSet<>();
 
     public Movie() {}
 

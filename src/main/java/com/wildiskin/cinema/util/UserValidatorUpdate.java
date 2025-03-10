@@ -1,6 +1,6 @@
 package com.wildiskin.cinema.util;
 
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,19 +19,19 @@ public class UserValidatorUpdate implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return UserDTO.class.equals(clazz);
+        return UserDto.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        UserDTO userDTO = (UserDTO) target;
+        UserDto userDTO = (UserDto) target;
 
-        String newUsername = userDTO.getUsername();
-        String oldUsername = userService.findById( (int) userDTO.getId()).getUsername();
+        String newUsername = userDTO.getEmail();
+        String oldUsername = userService.findById( (int) userDTO.getId()).getEmail();
         boolean isUsernameTaken;
 
         try {
-            UserDTO userDTO1 = userService.findByEmail(newUsername);
+            UserDto userDto1 = userService.findByEmail(newUsername);
             isUsernameTaken = true;
         }
         catch (UserNotFoundException e) {
@@ -47,7 +47,7 @@ public class UserValidatorUpdate implements Validator {
         boolean isPhoneTaken;
 
         try {
-            UserDTO userDTO1 = userService.findByPhoneNumber(newPhone);
+            UserDto userDto1 = userService.findByPhoneNumber(newPhone);
             isPhoneTaken = true;
         }
         catch (UserNotFoundException e) {

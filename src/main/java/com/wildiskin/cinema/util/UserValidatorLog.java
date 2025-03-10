@@ -1,8 +1,6 @@
 package com.wildiskin.cinema.util;
 
-import com.wildiskin.cinema.DTO.UserDTO;
-import com.wildiskin.cinema.models.User;
-import com.wildiskin.cinema.repositories.UserRepository;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,16 +22,16 @@ public class UserValidatorLog implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return UserDTO.class.equals(clazz);
+        return UserDto.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        UserDTO userDTO = (UserDTO) target;
-        if (userService.findByEmail(userDTO.getUsername()) == null) {
+        UserDto userDTO = (UserDto) target;
+        if (userService.findByEmail(userDTO.getEmail()) == null) {
             errors.rejectValue("username", "", "There is no account with this email");
         }
-        UserDTO user = userService.findByEmail(userDTO.getUsername());
+        UserDto user = userService.findByEmail(userDTO.getEmail());
         String password = passwordEncoder.encode(userDTO.getPassword());
         if (!user.getPassword().equals(password)) {
             errors.rejectValue("password", "", "Wrong password, try again");

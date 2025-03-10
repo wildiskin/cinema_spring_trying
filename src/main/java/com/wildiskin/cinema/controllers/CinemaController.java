@@ -4,7 +4,7 @@ package com.wildiskin.cinema.controllers;
 import com.wildiskin.cinema.DTO.BookDTO;
 import com.wildiskin.cinema.DTO.DirectorDTO;
 import com.wildiskin.cinema.DTO.MovieDTO;
-import com.wildiskin.cinema.DTO.UserDTO;
+import com.wildiskin.cinema.DTO.UserDto;
 import com.wildiskin.cinema.models.Book;
 import com.wildiskin.cinema.models.Director;
 import com.wildiskin.cinema.models.Movie;
@@ -280,14 +280,14 @@ public class CinemaController {
 
     @GetMapping("basket")
     public String getBasket(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
+        UserDto userDTO = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("basket", userService.getBasketById(userDTO.getId()));
         return "basket";
     }
 
     @GetMapping("addToBasket")
     public String addMovie(@ModelAttribute("movie") MovieDTO movieDTO, @AuthenticationPrincipal UserDetails userDetails) {
-        UserDTO userDTO = userService.findByEmail(userDetails.getUsername());
+        UserDto userDTO = userService.findByEmail(userDetails.getUsername());
         User user = userService.findByIdUser(userDTO.getId());
 
         Movie movie = movieService.findById(movieDTO.getId());
@@ -343,7 +343,7 @@ public class CinemaController {
     }
 
     @PostMapping("editProfile")
-    public String editProfile(@ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
+    public String editProfile(@ModelAttribute("user") UserDto userDTO, BindingResult bindingResult, @AuthenticationPrincipal UserDetails userDetails) {
 
 
 
@@ -355,7 +355,7 @@ public class CinemaController {
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
-        user.setEmail(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
         registerService.save(user);
         return "redirect:/";
     }
